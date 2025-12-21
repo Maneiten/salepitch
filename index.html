@@ -1,1 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+  Design Tokens
+  color palette:
+    - bg: #070A0F
+    - panel: rgba(255,255,255,0.06)
+    - stroke: rgba(255,255,255,0.12)
+    - text: rgba(255,255,255,0.92)
+    - muted: rgba(255,255,255,0.65)
+    - accent: #7C3AED (violet)
+    - accent2: #22D3EE (cyan)
+  spacing:
+    - page max width: 1120px
+    - section padding: py-16 (desktop), py-12 (mobile)
+  typography:
+    - headline: font-semibold tracking-tight
+    - body: leading-relaxed
+  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maneit — Craft, Design, Systems</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["ui-sans-serif","system-ui","-apple-system","Segoe UI","Roboto","Inter","Arial"] },
+          boxShadow: {
+            soft: "0 10px 30px rgba(0,0,0,0.35)"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* subtle grain (no external assets) */
+    .grain:before{
+      content:"";
+      position:absolute; inset:0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      pointer-events:none;
+      border-radius: inherit;
+    }
+    .ringline { box-shadow: inset 0 0 0 1px rgba(255,255,255,.10); }
+    .glow {
+      background: radial-gradient(800px 300px at 10% 10%, rgba(124,58,237,.22), transparent 60%),
+                  radial-gradient(700px 280px at 80% 20%, rgba(34,211,238,.18), transparent 60%),
+                  radial-gradient(900px 360px at 50% 110%, rgba(124,58,237,.12), transparent 60%);
+    }
+    .subtle-border { border: 1px solid rgba(255,255,255,.10); }
+  </style>
+</head>
+
+<body class="min-h-screen bg-[#070A0F] text-white font-sans">
+  <div class="fixed inset-0 -z-10 glow"></div>
+
+  <!-- Top bar -->
+  <header class="sticky top-0 z-30 backdrop-blur-xl bg-[#070A0F]/60 border-b border-white/10">
+    <div class="mx-auto max-w-[1120px] px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-xl bg-white/5 ringline relative overflow-hidden grain">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="opacity-90">
+              <path d="M12 2c3.3 2.2 6 6.2 6 10.5S15.3 20.8 12 22C8.7 20.8 6 16.8 6 12.5S8.7 4.2 12 2Z" stroke="rgba(255,255,255,.85)" stroke-width="1.6"/>
+              <path d="M12 6.2c1.6 1.4 2.8 3.5 2.8 5.8 0 2.1-1 4.2-2.8 5.2-1.8-1-2.8-3.1-2.8-5.2 0-2.3 1.2-4.4 2.8-5.8Z" stroke="rgba(34,211,238,.85)" stroke-width="1.2"/>
+            </svg>
+          </div>
+        </div>
+        <div class="leading-tight">
+          <div id="brandName" class="font-semibold tracking-tight"></div>
+          <div id="brandTagline" class="text-xs text-white/60"></div>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm text-white/70">
+        <a class="hover:text-white" href="#work">Work</a>
+        <a class="hover:text-white" href="#videos">Videos</a>
+        <a class="hover:text-white" href="#plan">Plan</a>
+        <a class="hover:text-white" href="#contact">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a id="ctaPrimary" href="#contact" class="inline-flex items-center gap-2 rounded-xl px-4 py-2 bg-white text-black font-semibold shadow-soft hover:opacity-95 transition">
+          <span id="ctaPrimaryText">Let’s talk</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="mx-auto max-w-[1120px] px-4 py-12 md:py-16">
+    <div class="grid md:grid-cols-12 gap-6 items-start">
+      <div class="md:col-span-7">
+        <div class="inline-flex items-center gap-2 rounded-full px-3 py-1 bg-white/5 subtle-border text-xs text-white/70">
+          <span class="h-1.5 w-1.5 rounded-full bg-cyan-300"></span>
+          <span id="heroBadge"></span>
+        </div>
+
+        <h1 id="heroTitle" class="mt-5 text-4xl md:text-5xl font-semibold tracking-tight leading-[1.04]"></h1>
+        <p id="heroSubtitle" class="mt-5 text-base md:text-lg text-white/70 leading-relaxed"></p>
+
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a id="heroBtnA" href="#work" class="rounded-xl px-5 py-3 bg-violet-600 hover:bg-violet-500 transition font-semibold shadow-soft">
+            See the work
+          </a>
+          <a id="heroBtnB" href="#plan" class="rounded-xl px-5 py-3 bg-white/5 hover:bg-white/10 transition subtle-border font-semibold text-white/90">
+            How we build & scale
+          </a>
+        </div>
+
+        <div class="mt-8 grid sm:grid-cols-3 gap-3">
+          <div class="rounded-2xl bg-white/5 subtle-border p-4">
+            <div id="stat1" class="text-lg font-semibold"></div>
+            <div id="stat1sub" class="text-sm text-white/60 mt-1"></div>
+          </div>
+          <div class="rounded-2xl bg-white/5 subtle-border p-4">
+            <div id="stat2" class="text-lg font-semibold"></div>
+            <div id="stat2sub" class="text-sm text-white/60 mt-1"></div>
+          </div>
+          <div class="rounded-2xl bg-white/5 subtle-border p-4">
+            <div id="stat3" class="text-lg font-semibold"></div>
+            <div id="stat3sub" class="text-sm text-white/60 mt-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="md:col-span-5">
+        <div class="rounded-3xl bg-white/5 subtle-border p-6 relative overflow-hidden grain">
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-white/70">Investor Snapshot</div>
+            <div class="text-xs text-white/60">personal / early-stage</div>
+          </div>
+
+          <div class="mt-4 space-y-3">
+            <div class="rounded-2xl bg-black/30 subtle-border p-4">
+              <div class="text-xs text-white/60">What you’re backing</div>
+              <div id="snapshot1" class="mt-1 font-semibold"></div>
+              <div id="snapshot1sub" class="mt-1 text-sm text-white/70 leading-relaxed"></div>
+            </div>
+
+            <div class="rounded-2xl bg-black/30 subtle-border p-4">
+              <div class="text-xs text-white/60">Why it wins</div>
+              <div id="snapshot2" class="mt-1 font-semibold"></div>
+              <div id="snapshot2sub" class="mt-1 text-sm text-white/70 leading-relaxed"></div>
+            </div>
+
+            <div class="rounded-2xl bg-black/30 subtle-border p-4">
+              <div class="text-xs text-white/60">What I need</div>
+              <div id="snapshot3" class="mt-1 font-semibold"></div>
+              <div id="snapshot3sub" class="mt-1 text-sm text-white/70 leading-relaxed"></div>
+            </div>
+          </div>
+
+          <div class="mt-5 text-xs text-white/55">
+            Tip: This page is intentionally clean and “trust-first”. Videos + proof below.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <section class="border-y border-white/10 bg-white/5">
+    <div class="mx-auto max-w-[1120px] px-4 py-6">
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="rounded-2xl bg-black/20 subtle-border p-4">
+          <div class="text-sm font-semibold">Craft + Systems</div>
+          <div class="text-sm text-white/65 mt-1">Physical products with obsessive finish, built on repeatable processes.</div>
+        </div>
+        <div class="rounded-2xl bg-black/20 subtle-border p-4">
+          <div class="text-sm font-semibold">Demonstrable</div>
+          <div class="text-sm text-white/65 mt-1">Not theory. Prototypes, live builds, and proof on video.</div>
+        </div>
+        <div class="rounded-2xl bg-black/20 subtle-border p-4">
+          <div class="text-sm font-semibold">Expandable</div>
+          <div class="text-sm text-white/65 mt-1">Start focused → scale into a brand and product line with content.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="work" class="mx-auto max-w-[1120px] px-4 py-12 md:py-16">
+    <div class="flex items-end justify-between gap-6">
+      <div>
+        <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">What I’m Building</h2>
+        <p class="mt-2 text-white/70 max-w-2xl leading-relaxed">
+          A focused, premium craft brand with content-driven growth — built like a product company, not a hobby.
+        </p>
+      </div>
+      <div class="hidden md:block text-sm text-white/60">
+        Clean. Repeatable. Sellable.
+      </div>
+    </div>
+
+    <div id="pillars" class="mt-8 grid md:grid-cols-3 gap-4"></div>
+
+    <div class="mt-10 grid lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-7 rounded-3xl bg-white/5 subtle-border p-6">
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-white/70">The “why me” angle</div>
+          <div class="text-xs text-white/60">credibility + clarity</div>
+        </div>
+        <h3 id="whyTitle" class="mt-3 text-xl font-semibold tracking-tight"></h3>
+        <p id="whyBody" class="mt-3 text-white/70 leading-relaxed"></p>
+
+        <div class="mt-6 grid sm:grid-cols-2 gap-3">
+          <div class="rounded-2xl bg-black/30 subtle-border p-4">
+            <div class="text-xs text-white/60">Method</div>
+            <div id="whyPoint1" class="mt-1 font-semibold"></div>
+            <div id="whyPoint1sub" class="mt-1 text-sm text-white/70"></div>
+          </div>
+          <div class="rounded-2xl bg-black/30 subtle-border p-4">
+            <div class="text-xs text-white/60">Style</div>
+            <div id="whyPoint2" class="mt-1 font-semibold"></div>
+            <div id="whyPoint2sub" class="mt-1 text-sm text-white/70"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 rounded-3xl bg-white/5 subtle-border p-6">
+        <div class="text-sm text-white/70">Proof & Deliverables</div>
+        <div class="mt-4 space-y-3" id="proofList"></div>
+        <div class="mt-5 rounded-2xl bg-black/30 subtle-border p-4">
+          <div class="text-xs text-white/60">Next milestone</div>
+          <div id="milestone" class="mt-1 font-semibold"></div>
+          <div id="milestoneSub" class="mt-1 text-sm text-white/70"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEOS -->
+  <section id="videos" class="border-y border-white/10 bg-white/5">
+    <div class="mx-auto max-w-[1120px] px-4 py-12 md:py-16">
+      <div class="flex items-end justify-between gap-6">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Video Updates</h2>
+          <p class="mt-2 text-white/70 max-w-2xl leading-relaxed">
+            Add YouTube IDs to the config and this grid updates automatically. Perfect for investor check-ins.
+          </p>
+        </div>
+        <div class="text-sm text-white/60">No platform lock-in. Local file works.</div>
+      </div>
+
+      <div id="videoGrid" class="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+  </section>
+
+  <!-- PLAN -->
+  <section id="plan" class="mx-auto max-w-[1120px] px-4 py-12 md:py-16">
+    <div class="grid lg:grid-cols-12 gap-6 items-start">
+      <div class="lg:col-span-5 rounded-3xl bg-white/5 subtle-border p-6">
+        <div class="text-sm text-white/70">Investment Plan (simple + honest)</div>
+        <h2 class="mt-3 text-2xl md:text-3xl font-semibold tracking-tight">What €100k unlocks</h2>
+        <p id="fundingBody" class="mt-3 text-white/70 leading-relaxed"></p>
+
+        <div class="mt-6 space-y-3" id="fundingBreakdown"></div>
+      </div>
+
+      <div class="lg:col-span-7 rounded-3xl bg-white/5 subtle-border p-6">
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-white/70">Roadmap</div>
+          <div class="text-xs text-white/60">practical steps</div>
+        </div>
+
+        <div id="roadmap" class="mt-5 space-y-3"></div>
+
+        <div class="mt-6 rounded-2xl bg-black/30 subtle-border p-4">
+          <div class="text-xs text-white/60">Investor promise</div>
+          <div id="promise" class="mt-1 font-semibold"></div>
+          <div id="promiseSub" class="mt-1 text-sm text-white/70"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="border-t border-white/10 bg-white/5">
+    <div class="mx-auto max-w-[1120px] px-4 py-12 md:py-16">
+      <div class="grid md:grid-cols-12 gap-6 items-start">
+        <div class="md:col-span-7">
+          <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Let’s do this clean and professionally.</h2>
+          <p class="mt-3 text-white/70 leading-relaxed">
+            If you want, I can send a one-page PDF summary + a short video update cadence so you always know exactly how things are progressing.
+          </p>
+
+          <div class="mt-6 grid sm:grid-cols-2 gap-3">
+            <div class="rounded-2xl bg-black/30 subtle-border p-4">
+              <div class="text-xs text-white/60">Email</div>
+              <div id="email" class="mt-1 font-semibold"></div>
+            </div>
+            <div class="rounded-2xl bg-black/30 subtle-border p-4">
+              <div class="text-xs text-white/60">Location</div>
+              <div id="location" class="mt-1 font-semibold"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="md:col-span-5">
+          <div class="rounded-3xl bg-black/30 subtle-border p-6">
+            <div class="text-sm text-white/70">Quick message template</div>
+            <div class="mt-3 text-white/80 leading-relaxed text-sm">
+              <p class="mb-3">“Hi — here’s the current build page with videos and milestones.</p>
+              <p class="mb-3">If you want to proceed, I’ll run a 30/60/90 plan and send weekly proof updates.”</p>
+              <p class="text-white/60">— <span id="signatureName"></span></p>
+            </div>
+
+            <a id="ctaSecondary" href="#videos" class="mt-5 inline-flex w-full items-center justify-center rounded-xl px-5 py-3 bg-white text-black font-semibold shadow-soft hover:opacity-95 transition">
+              Watch progress videos →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <footer class="mt-10 flex flex-col md:flex-row gap-3 items-start md:items-center justify-between text-xs text-white/45">
+        <div>© <span id="year"></span> <span id="footerName"></span>. Built as a simple, editable single-file site.</div>
+        <div class="text-white/45">Local-first • GitHub-ready • YouTube-ready</div>
+      </footer>
+    </div>
+  </section>
+
+  <script>
+    // =========================
+    // EASY UPDATE CONFIG (edit only this)
+    // =========================
+    const CONFIG = {
+      brandName: "Maneit",
+      brandTagline: "Craft • Design • Systems",
+      heroBadge: "Private investor overview (personal)",
+      heroTitle: "A premium craft brand built with product-level discipline.",
+      heroSubtitle:
+        "I build physical products with obsessive finish — and I build the systems behind them so the work becomes repeatable, sellable, and scalable. This page is a clean overview for a personal investor, with video proof and milestones.",
+      ctaPrimaryText: "Schedule a chat",
+
+      stats: [
+        { value: "Premium craft", sub: "Leather goods + maker standards" },
+        { value: "Content-driven", sub: "YouTube proof + trust loop" },
+        { value: "System-built", sub: "Repeatable process → scalable brand" }
+      ],
+
+      snapshot: {
+        oneTitle: "A focused craft business",
+        oneSub: "A product-line with a clear identity, quality baseline, and a repeatable pipeline.",
+        twoTitle: "Proof beats promises",
+        twoSub: "Weekly video updates + clear milestones + visible output. No guessing.",
+        threeTitle: "Capital = speed",
+        threeSub: "Tools, materials, branding, and time to produce consistent inventory + content."
+      },
+
+      pillars: [
+        {
+          title: "Leather Line (Core)",
+          body: "A small number of products done extremely well: wallets, cardholders, belts, desk mats — refined and branded.",
+          icon: "✦"
+        },
+        {
+          title: "Brand + Content (Growth)",
+          body: "YouTube becomes the proof engine: process, quality, iterations, and behind-the-scenes building trust.",
+          icon: "▣"
+        },
+        {
+          title: "Systems (Scale)",
+          body: "Templates, jigs, checklists, packaging standards, and a repeatable pipeline. This is how it becomes a business.",
+          icon: "⟡"
+        }
+      ],
+
+      why: {
+        title: "Why this isn’t a hobby",
+        body:
+          "I work like a product builder: tight scope, high quality floor, iteration loops, and proof updates. The goal is a brand that can survive beyond motivation — because the system carries the output.",
+        point1: { title: "Repeatable pipeline", sub: "Design → prototype → standardize → produce → ship → improve." },
+        point2: { title: "Premium minimal aesthetic", sub: "A clean Scandinavian look that signals quality and restraint." }
+      },
+
+      proof: [
+        { title: "Product prototypes (weekly)", sub: "Visible physical progress with a defined quality baseline." },
+        { title: "YouTube updates", sub: "Proof-first: what was built, what changed, what’s next." },
+        { title: "Brand kit v1", sub: "Name, palette, packaging style, product photos, storefront-ready copy." }
+      ],
+
+      milestone: {
+        title: "First sellable batch + consistent video cadence",
+        sub: "A small product set with consistent finishing + packaging + repeatable production notes."
+      },
+
+      videos: [
+        // Replace these with YOUR YouTube video IDs (the part after v= in the URL)
+        // Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ  -> "dQw4w9WgXcQ"
+        { id: "dQw4w9WgXcQ", title: "Update #1 — Vision + setup" },
+        { id: "dQw4w9WgXcQ", title: "Update #2 — First prototypes" },
+        { id: "dQw4w9WgXcQ", title: "Update #3 — Finishing + packaging" }
+      ],
+
+      funding: {
+        body:
+          "The goal is not to burn money — it’s to buy speed and consistency. The investment enables stable production, clean branding, and a steady cadence of proof through content.",
+        breakdown: [
+          { label: "Tools + equipment", value: "€25k", sub: "Press, cutting, finishing, photography basics, workspace setup." },
+          { label: "Materials + inventory", value: "€25k", sub: "Leather, hardware, packaging, prototypes → sellable stock." },
+          { label: "Brand + storefront", value: "€15k", sub: "Brand kit, product photos, simple e-com setup." },
+          { label: "Runway + operations", value: "€35k", sub: "Time allocation, shipping, iteration, buffer for consistency." }
+        ]
+      },
+
+      roadmap: [
+        { phase: "0–30 days", title: "Foundation + first sellable prototypes", sub: "Tools, materials, product selection, quality baseline, first videos." },
+        { phase: "30–60 days", title: "Small product line + packaging standard", sub: "Repeatable process, consistent finishing, first customer feedback loop." },
+        { phase: "60–90 days", title: "Inventory cadence + growth loop", sub: "Reliable output, content pipeline, brand trust compounding." }
+      ],
+
+      promise: {
+        title: "Weekly proof updates. Monthly milestone review.",
+        sub: "You always know what’s happening — in clear language, with visible results."
+      },
+
+      contact: {
+        email: "your.email@example.com",
+        location: "Germany (local-first, global shipping later)",
+        signatureName: "Kristoffer"
+      }
+    };
+
+    // =========================
+    // Render helpers
+    // =========================
+    const $ = (id) => document.getElementById(id);
+
+    function setText(id, text) { const el = $(id); if (el) el.textContent = text; }
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
+    // top
+    setText("brandName", CONFIG.brandName);
+    setText("brandTagline", CONFIG.brandTagline);
+    setText("heroBadge", CONFIG.heroBadge);
+    setText("heroTitle", CONFIG.heroTitle);
+    setText("heroSubtitle", CONFIG.heroSubtitle);
+    setText("ctaPrimaryText", CONFIG.ctaPrimaryText);
+
+    // stats
+    setText("stat1", CONFIG.stats[0].value); setText("stat1sub", CONFIG.stats[0].sub);
+    setText("stat2", CONFIG.stats[1].value); setText("stat2sub", CONFIG.stats[1].sub);
+    setText("stat3", CONFIG.stats[2].value); setText("stat3sub", CONFIG.stats[2].sub);
+
+    // snapshot
+    setText("snapshot1", CONFIG.snapshot.oneTitle);
+    setText("snapshot1sub", CONFIG.snapshot.oneSub);
+    setText("snapshot2", CONFIG.snapshot.twoTitle);
+    setText("snapshot2sub", CONFIG.snapshot.twoSub);
+    setText("snapshot3", CONFIG.snapshot.threeTitle);
+    setText("snapshot3sub", CONFIG.snapshot.threeSub);
+
+    // pillars
+    const pillars = document.getElementById("pillars");
+    pillars.innerHTML = CONFIG.pillars.map(p => `
+      <div class="rounded-3xl bg-white/5 subtle-border p-6">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-2xl bg-black/30 subtle-border flex items-center justify-center text-lg">
+            ${escapeHtml(p.icon)}
+          </div>
+          <div class="font-semibold">${escapeHtml(p.title)}</div>
+        </div>
+        <p class="mt-3 text-white/70 leading-relaxed">${escapeHtml(p.body)}</p>
+      </div>
+    `).join("");
+
+    // why
+    setText("whyTitle", CONFIG.why.title);
+    setText("whyBody", CONFIG.why.body);
+    setText("whyPoint1", CONFIG.why.point1.title);
+    setText("whyPoint1sub", CONFIG.why.point1.sub);
+    setText("whyPoint2", CONFIG.why.point2.title);
+    setText("whyPoint2sub", CONFIG.why.point2.sub);
+
+    // proof
+    const proofList = document.getElementById("proofList");
+    proofList.innerHTML = CONFIG.proof.map(item => `
+      <div class="rounded-2xl bg-black/30 subtle-border p-4">
+        <div class="font-semibold">${escapeHtml(item.title)}</div>
+        <div class="mt-1 text-sm text-white/70">${escapeHtml(item.sub)}</div>
+      </div>
+    `).join("");
+
+    // milestone
+    setText("milestone", CONFIG.milestone.title);
+    setText("milestoneSub", CONFIG.milestone.sub);
+
+    // videos
+    const videoGrid = document.getElementById("videoGrid");
+    videoGrid.innerHTML = CONFIG.videos.map(v => `
+      <div class="rounded-3xl bg-black/30 subtle-border overflow-hidden">
+        <div class="aspect-video w-full bg-black">
+          <iframe
+            class="w-full h-full"
+            src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}"
+            title="${escapeHtml(v.title)}"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+        <div class="p-4">
+          <div class="font-semibold">${escapeHtml(v.title)}</div>
+          <div class="mt-1 text-sm text-white/60">YouTube embed • privacy-enhanced mode</div>
+        </div>
+      </div>
+    `).join("");
+
+    // funding
+    setText("fundingBody", CONFIG.funding.body);
+    const fundingBreakdown = document.getElementById("fundingBreakdown");
+    fundingBreakdown.innerHTML = CONFIG.funding.breakdown.map(x => `
+      <div class="rounded-2xl bg-black/30 subtle-border p-4">
+        <div class="flex items-center justify-between gap-3">
+          <div class="font-semibold">${escapeHtml(x.label)}</div>
+          <div class="text-white/90 font-semibold">${escapeHtml(x.value)}</div>
+        </div>
+        <div class="mt-1 text-sm text-white/70">${escapeHtml(x.sub)}</div>
+      </div>
+    `).join("");
+
+    // roadmap
+    const roadmap = document.getElementById("roadmap");
+    roadmap.innerHTML = CONFIG.roadmap.map((r, idx) => `
+      <div class="rounded-2xl bg-black/30 subtle-border p-4">
+        <div class="flex items-center justify-between gap-3">
+          <div class="text-xs text-white/60">${escapeHtml(r.phase)}</div>
+          <div class="text-xs text-white/60">Step ${idx+1}</div>
+        </div>
+        <div class="mt-1 font-semibold">${escapeHtml(r.title)}</div>
+        <div class="mt-1 text-sm text-white/70">${escapeHtml(r.sub)}</div>
+      </div>
+    `).join("");
+
+    // promise
+    setText("promise", CONFIG.promise.title);
+    setText("promiseSub", CONFIG.promise.sub);
+
+    // contact
+    setText("email", CONFIG.contact.email);
+    setText("location", CONFIG.contact.location);
+    setText("signatureName", CONFIG.contact.signatureName);
+
+    // footer
+    setText("year", new Date().getFullYear());
+    setText("footerName", CONFIG.brandName);
+  </script>
+</body>
+</html>
 
