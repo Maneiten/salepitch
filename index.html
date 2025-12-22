@@ -1,556 +1,863 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <!--
-  Design Tokens
-  color palette:
-    - bg: #070A0F
-    - panel: rgba(255,255,255,0.06)
-    - stroke: rgba(255,255,255,0.12)
-    - text: rgba(255,255,255,0.92)
-    - muted: rgba(255,255,255,0.65)
-    - accent: #7C3AED (violet)
-    - accent2: #22D3EE (cyan)
-  spacing:
-    - page max width: 1120px
-    - section padding: py-16 (desktop), py-12 (mobile)
-  typography:
-    - headline: font-semibold tracking-tight
-    - body: leading-relaxed
-  -->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Maneit — Craft, Design, Systems</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Yggdrasil Studio — Graphic Design Commissions</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ["ui-sans-serif","system-ui","-apple-system","Segoe UI","Roboto","Inter","Arial"] },
-          boxShadow: {
-            soft: "0 10px 30px rgba(0,0,0,0.35)"
-          }
-        }
-      }
-    }
-  </script>
+  <!--
+    YGGDRASIL-INSPIRED THEME (Nordic forest / rune gold / cold night)
+    bg0:  #05070b
+    bg1:  #070b10
+    ink:  rgba(255,255,255,.92)
+    muted:rgba(255,255,255,.68)
+    stroke:rgba(255,255,255,.12)
+
+    moss: #22c55e
+    pine: #0ea5a4
+    rune: #f6c453
+    ember:#ef4444
+    violet:#7c3aed
+  -->
 
   <style>
-    /* subtle grain (no external assets) */
-    .grain:before{
+    :root{
+      --bg0:#05070b;
+      --bg1:#070b10;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.08);
+      --stroke:rgba(255,255,255,.12);
+      --ink:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.68);
+      --soft:rgba(255,255,255,.55);
+
+      --moss:#22c55e;
+      --pine:#0ea5a4;
+      --rune:#f6c453;
+      --ember:#ef4444;
+      --violet:#7c3aed;
+
+      --shadow: 0 16px 40px rgba(0,0,0,.45);
+      --radius: 18px;
+      --radius2: 24px;
+
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1100px 600px at 15% 0%, rgba(34,197,94,.16), transparent 55%),
+        radial-gradient(900px 520px at 85% 10%, rgba(246,196,83,.12), transparent 55%),
+        radial-gradient(900px 680px at 55% 110%, rgba(14,165,164,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:1180px; margin:0 auto; padding:0 18px}
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius2);
+    }
+
+    /* Top nav */
+    .nav{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: rgba(5,7,11,.62);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .navInner{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:12px 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      min-width: 240px;
+    }
+    .mark{
+      width:42px; height:42px; border-radius:14px;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,.42), transparent 52%),
+        linear-gradient(135deg, rgba(34,197,94,.95), rgba(246,196,83,.72));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 12px 26px rgba(0,0,0,.35);
+      position:relative;
+      overflow:hidden;
+    }
+    .mark:after{
       content:"";
-      position:absolute; inset:0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
-      pointer-events:none;
-      border-radius: inherit;
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.22), transparent 60%);
+      transform: rotate(18deg);
+      opacity:.7;
     }
-    .ringline { box-shadow: inset 0 0 0 1px rgba(255,255,255,.10); }
-    .glow {
-      background: radial-gradient(800px 300px at 10% 10%, rgba(124,58,237,.22), transparent 60%),
-                  radial-gradient(700px 280px at 80% 20%, rgba(34,211,238,.18), transparent 60%),
-                  radial-gradient(900px 360px at 50% 110%, rgba(124,58,237,.12), transparent 60%);
+    .brandTitle{display:flex; flex-direction:column; line-height:1.05}
+    .brandTitle b{font-size:14px; letter-spacing:.2px}
+    .brandTitle span{font-size:12px; color: var(--muted)}
+
+    .links{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.86);
+      font-size: 12px;
+      user-select:none;
+      transition: transform .08s ease, background .15s ease, border .15s ease;
     }
-    .subtle-border { border: 1px solid rgba(255,255,255,.10); }
+    .chip:hover{transform: translateY(-1px); background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16)}
+    .dot{width:8px; height:8px; border-radius:99px; background: var(--moss); box-shadow: 0 0 0 4px rgba(34,197,94,.12)}
+    .dot.gold{background: var(--rune); box-shadow: 0 0 0 4px rgba(246,196,83,.12)}
+    .dot.pine{background: var(--pine); box-shadow: 0 0 0 4px rgba(14,165,164,.12)}
+
+    /* Hero */
+    .hero{
+      padding: 26px 0 18px;
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 14px;
+      align-items:stretch;
+    }
+    @media (max-width: 980px){
+      .heroGrid{grid-template-columns: 1fr}
+    }
+
+    .heroCard{padding: 18px}
+    .heroTitle{
+      margin: 0;
+      font-size: clamp(26px, 2.8vw, 40px);
+      letter-spacing: .2px;
+      line-height: 1.08;
+    }
+    .heroTitle .accent{
+      background: linear-gradient(90deg, rgba(34,197,94,1), rgba(246,196,83,1));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color: transparent;
+    }
+    .heroP{
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 78ch;
+    }
+    .heroBadges{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px;
+    }
+    .badge{
+      display:inline-flex; gap:8px; align-items:center;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.88);
+      font-size: 12px;
+    }
+    .rune{
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(246,196,83,.12);
+      border: 1px solid rgba(246,196,83,.25);
+      color: rgba(255,255,255,.92);
+    }
+
+    .ctaRow{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top: 14px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.90);
+      font-size: 13px;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .08s ease, background .15s ease, border .15s ease;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.18)}
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(34,197,94,.35), rgba(246,196,83,.22));
+      border-color: rgba(246,196,83,.26);
+    }
+    .btn.gold{
+      background: rgba(246,196,83,.12);
+      border-color: rgba(246,196,83,.28);
+    }
+    .btn.ghost{
+      background: rgba(0,0,0,.18);
+      border-color: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.82);
+    }
+
+    /* Side card */
+    .sideCard{padding: 18px}
+    .sideTitle{
+      margin:0;
+      font-size: 14px;
+      letter-spacing: .2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.84);
+    }
+    .sideP{margin:10px 0 0; color: var(--muted); font-size: 13px}
+    .miniList{margin: 10px 0 0; padding-left: 18px; color: rgba(255,255,255,.82)}
+    .miniList li{margin:6px 0; color: var(--muted); font-size: 13px}
+
+    /* Sections */
+    section{padding: 10px 0 0}
+    .sectionHead{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap: 12px; flex-wrap:wrap;
+      margin: 14px 0 10px;
+    }
+    .sectionHead h2{margin:0; font-size: 16px; letter-spacing:.2px}
+    .sectionHead p{margin:0; color: var(--muted); font-size: 12px}
+
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 980px){ .grid3{grid-template-columns:1fr} }
+
+    .card{
+      padding: 14px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    .card h3{margin:0 0 8px; font-size: 14px}
+    .card p{margin:0; color: var(--muted); font-size: 13px}
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      color: rgba(255,255,255,.84);
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    /* Portfolio */
+    .portfolioWrap{padding: 14px}
+    .portfolioGrid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 980px){ .portfolioGrid{grid-template-columns:1fr} }
+
+    .shot{
+      border-radius: 16px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
+      box-shadow: 0 14px 32px rgba(0,0,0,.35);
+      position:relative;
+      min-height: 220px;
+    }
+    .shot img{
+      width:100%;
+      height: 100%;
+      object-fit: cover;
+      display:block;
+      transform: scale(1.01);
+      transition: transform .22s ease, filter .22s ease;
+      filter: saturate(1.08) contrast(1.03);
+    }
+    .shot:hover img{transform: scale(1.05)}
+    .shotCap{
+      position:absolute; inset:auto 0 0 0;
+      padding: 10px 10px;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.68));
+      display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
+    }
+    .shotCap b{font-size: 13px}
+    .shotCap span{
+      font-size: 11px;
+      color: rgba(255,255,255,.78);
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .helper{
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(246,196,83,.07);
+      border: 1px solid rgba(246,196,83,.16);
+      color: rgba(255,255,255,.84);
+      font-size: 13px;
+    }
+    .helper code{
+      font-family: var(--mono);
+      font-size: 12px;
+      background: rgba(0,0,0,.24);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+
+    /* Process timeline */
+    .steps{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 980px){ .steps{grid-template-columns:1fr} }
+    .step{
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.20);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .stepTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom: 8px;
+    }
+    .num{
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.82);
+    }
+    .step h3{margin:0; font-size: 14px}
+    .step p{margin:8px 0 0; color: var(--muted); font-size: 13px}
+
+    /* Pricing */
+    .pricing{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 980px){ .pricing{grid-template-columns:1fr} }
+    .priceCard{
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+      position:relative;
+      overflow:hidden;
+    }
+    .priceCard.featured{
+      border-color: rgba(246,196,83,.22);
+      background:
+        radial-gradient(600px 300px at 30% 0%, rgba(246,196,83,.12), transparent 55%),
+        rgba(255,255,255,.04);
+    }
+    .priceCard h3{margin:0; font-size: 15px}
+    .price{
+      margin: 8px 0 0;
+      font-size: 26px;
+      letter-spacing:.2px;
+    }
+    .price small{font-size: 12px; color: var(--muted)}
+    .ul{margin: 10px 0 0; padding-left: 18px}
+    .ul li{margin: 7px 0; color: var(--muted); font-size: 13px}
+    .fine{margin: 10px 0 0; color: rgba(255,255,255,.62); font-size: 12px}
+
+    /* Contact */
+    .contact{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 980px){ .contact{grid-template-columns:1fr} }
+    .form{
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+    }
+    label{display:block; font-size: 12px; color: rgba(255,255,255,.78); margin: 10px 0 6px}
+    input, textarea, select{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: var(--ink);
+      outline: none;
+      font-family: var(--sans);
+      font-size: 13px;
+    }
+    textarea{min-height: 130px; resize: vertical}
+    .formActions{display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px}
+    .tiny{
+      margin-top: 10px;
+      color: rgba(255,255,255,.62);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .tiny a{ text-decoration: underline; text-underline-offset: 3px; }
+
+    /* Footer */
+    footer{
+      padding: 26px 0 30px;
+      color: rgba(255,255,255,.60);
+      font-size: 12px;
+      text-align:center;
+    }
+
+    /* Decorative “root line” */
+    .rootline{
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(34,197,94,.35), rgba(246,196,83,.25), rgba(14,165,164,.25), transparent);
+      margin: 14px 0;
+      border-radius: 999px;
+    }
   </style>
 </head>
 
-<body class="min-h-screen bg-[#070A0F] text-white font-sans">
-  <div class="fixed inset-0 -z-10 glow"></div>
-
-  <!-- Top bar -->
-  <header class="sticky top-0 z-30 backdrop-blur-xl bg-[#070A0F]/60 border-b border-white/10">
-    <div class="mx-auto max-w-[1120px] px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="h-9 w-9 rounded-xl bg-white/5 ringline relative overflow-hidden grain">
-          <div class="absolute inset-0 flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="opacity-90">
-              <path d="M12 2c3.3 2.2 6 6.2 6 10.5S15.3 20.8 12 22C8.7 20.8 6 16.8 6 12.5S8.7 4.2 12 2Z" stroke="rgba(255,255,255,.85)" stroke-width="1.6"/>
-              <path d="M12 6.2c1.6 1.4 2.8 3.5 2.8 5.8 0 2.1-1 4.2-2.8 5.2-1.8-1-2.8-3.1-2.8-5.2 0-2.3 1.2-4.4 2.8-5.8Z" stroke="rgba(34,211,238,.85)" stroke-width="1.2"/>
-            </svg>
-          </div>
-        </div>
-        <div class="leading-tight">
-          <div id="brandName" class="font-semibold tracking-tight"></div>
-          <div id="brandTagline" class="text-xs text-white/60"></div>
+<body>
+  <!-- NAV -->
+  <div class="nav">
+    <div class="wrap navInner">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div class="brandTitle">
+          <b>Yggdrasil Studio</b>
+          <span>Graphic Design Commissions • Stream-ready visuals</span>
         </div>
       </div>
 
-      <nav class="hidden md:flex items-center gap-6 text-sm text-white/70">
-        <a class="hover:text-white" href="#work">Work</a>
-        <a class="hover:text-white" href="#videos">Videos</a>
-        <a class="hover:text-white" href="#plan">Plan</a>
-        <a class="hover:text-white" href="#contact">Contact</a>
-      </nav>
-
-      <div class="flex items-center gap-2">
-        <a id="ctaPrimary" href="#contact" class="inline-flex items-center gap-2 rounded-xl px-4 py-2 bg-white text-black font-semibold shadow-soft hover:opacity-95 transition">
-          <span id="ctaPrimaryText">Let’s talk</span>
-          <span aria-hidden="true">→</span>
-        </a>
+      <div class="links">
+        <a class="chip" href="#portfolio"><span class="dot"></span>Portfolio</a>
+        <a class="chip" href="#services"><span class="dot pine"></span>Services</a>
+        <a class="chip" href="#process"><span class="dot gold"></span>Process</a>
+        <a class="chip" href="#pricing"><span class="dot gold"></span>Packages</a>
+        <a class="chip" href="#contact"><span class="dot"></span>Contact</a>
       </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap heroGrid">
+      <div class="glass heroCard">
+        <h1 class="heroTitle">
+          Make your channel look <span class="accent">expensive</span> — without the chaos.
+        </h1>
+        <p class="heroP">
+          Clean, bold, stream-native graphics: logos, banners, emotes, panels, mascot illustrations, and full brand kits.
+          Built for creators who want a strong identity and fast delivery.
+        </p>
+
+        <div class="heroBadges">
+          <div class="badge"><span class="rune">ᚤ</span> Stream-focused design</div>
+          <div class="badge"><span class="rune">ᚷ</span> Clear communication</div>
+          <div class="badge"><span class="rune">ᛟ</span> Commission-safe workflow</div>
+          <div class="badge"><span class="rune">ᛇ</span> File handover + revisions</div>
+        </div>
+
+        <div class="ctaRow">
+          <a class="btn primary" href="#contact">Request a quote</a>
+          <a class="btn gold" href="#portfolio">View work</a>
+          <a class="btn ghost" href="#pricing">See packages</a>
+        </div>
+
+        <div class="rootline"></div>
+
+        <p class="heroP" style="margin-top:0">
+          <b style="color:rgba(255,255,255,.90)">Note:</b>
+          Samples below include the artist’s official watermarks, as shown in her portfolio.
+        </p>
+      </div>
+
+      <aside class="glass sideCard">
+        <h3 class="sideTitle">Artist spotlight</h3>
+        <p class="sideP">
+          <b>Jodie</b> was the first to approach the stream — surprisingly genuine, but careful.
+          That’s a green flag: professional boundaries + respect for your situation.
+        </p>
+        <ul class="miniList">
+          <li>Commission-ready visuals (logos, banners, mascots)</li>
+          <li>Consistent “esports badge” style</li>
+          <li>Clean shapes + readable typography</li>
+          <li>Deliverable-focused (assets you can actually use)</li>
+        </ul>
+
+        <div class="rootline"></div>
+
+        <p class="sideP">
+          Want to check her existing presence? Search for <b>eisp.io</b> on Google (as she suggested).
+        </p>
+
+        <div class="ctaRow">
+          <!-- You can swap this to your preferred call-to-action -->
+          <a class="btn" href="#contact">Ask for a concept</a>
+          <a class="btn ghost" href="https://discord.gg/qG6negyrYn" target="_blank" rel="noopener">Join Emotional Gaming</a>
+        </div>
+      </aside>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="mx-auto max-w-[1120px] px-4 py-12 md:py-16">
-    <div class="grid md:grid-cols-12 gap-6 items-start">
-      <div class="md:col-span-7">
-        <div class="inline-flex items-center gap-2 rounded-full px-3 py-1 bg-white/5 subtle-border text-xs text-white/70">
-          <span class="h-1.5 w-1.5 rounded-full bg-cyan-300"></span>
-          <span id="heroBadge"></span>
+  <main class="wrap">
+
+    <!-- SERVICES -->
+    <section id="services">
+      <div class="sectionHead">
+        <h2>Services</h2>
+        <p>What we can deliver (fast) + what actually moves the needle for creators.</p>
+      </div>
+
+      <div class="grid3">
+        <div class="card">
+          <h3>Logo + Mascot Identity</h3>
+          <p>Signature mark that reads at 64px and still looks premium on banners, shirts, and overlays.</p>
+          <div class="pill">Best for: channels, orgs, teams</div>
         </div>
 
-        <h1 id="heroTitle" class="mt-5 text-4xl md:text-5xl font-semibold tracking-tight leading-[1.04]"></h1>
-        <p id="heroSubtitle" class="mt-5 text-base md:text-lg text-white/70 leading-relaxed"></p>
-
-        <div class="mt-8 flex flex-col sm:flex-row gap-3">
-          <a id="heroBtnA" href="#work" class="rounded-xl px-5 py-3 bg-violet-600 hover:bg-violet-500 transition font-semibold shadow-soft">
-            See the work
-          </a>
-          <a id="heroBtnB" href="#plan" class="rounded-xl px-5 py-3 bg-white/5 hover:bg-white/10 transition subtle-border font-semibold text-white/90">
-            How we build & scale
-          </a>
+        <div class="card">
+          <h3>Banner + Panels + Offline Screens</h3>
+          <p>A complete “stream header kit” so your Twitch/Kick/YouTube pages don’t look unfinished.</p>
+          <div class="pill">Best for: stream growth + brand trust</div>
         </div>
 
-        <div class="mt-8 grid sm:grid-cols-3 gap-3">
-          <div class="rounded-2xl bg-white/5 subtle-border p-4">
-            <div id="stat1" class="text-lg font-semibold"></div>
-            <div id="stat1sub" class="text-sm text-white/60 mt-1"></div>
+        <div class="card">
+          <h3>Emotes + Badges + Alerts</h3>
+          <p>High-contrast, expressive sets that work in dark mode and stay readable on mobile.</p>
+          <div class="pill">Best for: community identity</div>
+        </div>
+
+        <div class="card">
+          <h3>Esports-Style Player Cards</h3>
+          <p>Profile cards, roster graphics, social templates. Clean typography, strong hierarchy.</p>
+          <div class="pill">Best for: teams + events</div>
+        </div>
+
+        <div class="card">
+          <h3>Thumbnail Systems</h3>
+          <p>Reusable templates that keep your content consistent while staying “clickable”.</p>
+          <div class="pill">Best for: YouTube + clips</div>
+        </div>
+
+        <div class="card">
+          <h3>Brand Kit / Style Guide</h3>
+          <p>Colors, fonts, logo rules, backgrounds. Makes future work faster and more consistent.</p>
+          <div class="pill">Best for: scaling output</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="rootline"></div>
+
+    <!-- PORTFOLIO -->
+    <section id="portfolio" class="glass portfolioWrap">
+      <div class="sectionHead" style="margin-top:0">
+        <h2>Featured work (samples)</h2>
+        <p>These are sample commissions shared in chat. Watermarks intentionally preserved.</p>
+      </div>
+
+      <!--
+        IMPORTANT:
+        Place the images in: ./assets/portfolio/
+        and name them exactly like below, or update the src paths.
+
+        Provided images (from your upload):
+          1) 3134f603-ef63-4f3b-a9af-c4be03285c3c.png
+          2) 0c07d253-7b4d-4436-96f0-683a86394381.png
+          3) 60341e57-481f-4f72-bdef-a5f60b3c0b9e.png
+          4) 0d116a75-d5a0-48d8-ab89-f962802e6b1a.png
+          5) f4978d36-efce-45d4-a33c-95811ea9f86b.png
+          6) 23203d73-42ad-4936-b7fd-1dd5423b19f8.png
+      -->
+
+      <div class="portfolioGrid">
+        <figure class="shot">
+          <img src="./assets/portfolio/notEve-n.png" alt="Sample: NotEve-n — mascot illustration" loading="lazy">
+          <div class="shotCap"><b>Mascot / Fantasy</b><span>Logo Card</span></div>
+        </figure>
+
+        <figure class="shot">
+          <img src="./assets/portfolio/nubeldalol.png" alt="Sample: nubeldalol — banner illustration" loading="lazy">
+          <div class="shotCap"><b>Banner Scene</b><span>Streamer</span></div>
+        </figure>
+
+        <figure class="shot">
+          <img src="./assets/portfolio/seanlive11.png" alt="Sample: SEANLIVE11 — esports badge design" loading="lazy">
+          <div class="shotCap"><b>Esports Badge</b><span>Logo Card</span></div>
+        </figure>
+
+        <figure class="shot">
+          <img src="./assets/portfolio/biohazard_playz.png" alt="Sample: BIOHAZARD_PLAYZ_ — mascot illustration" loading="lazy">
+          <div class="shotCap"><b>Mascot / Hazard</b><span>Logo Card</span></div>
+        </figure>
+
+        <figure class="shot">
+          <img src="./assets/portfolio/x666_joker.png" alt="Sample: X666_JOKER — sci-fi character design" loading="lazy">
+          <div class="shotCap"><b>Sci-Fi / Dark</b><span>Logo Card</span></div>
+        </figure>
+
+        <figure class="shot">
+          <img src="./assets/portfolio/frostjulian.png" alt="Sample: FROSTJULIAN — anime-inspired badge design" loading="lazy">
+          <div class="shotCap"><b>Anime / Badge</b><span>Logo Card</span></div>
+        </figure>
+      </div>
+
+      <div class="helper">
+        <b>Setup note (so you don’t fight paths):</b>
+        put the images in <code>./assets/portfolio/</code> and rename them to match the <code>src</code> values above.
+        If you want, I can also generate a tiny PowerShell or bash script that auto-renames and builds the folder structure.
+      </div>
+    </section>
+
+    <div class="rootline"></div>
+
+    <!-- PROCESS -->
+    <section id="process">
+      <div class="sectionHead">
+        <h2>How commissions work (low-stress, high-clarity)</h2>
+        <p>Designed for “careful but genuine” clients and creators who hate ambiguity.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="stepTop">
+            <h3>Discovery</h3>
+            <span class="num">01</span>
           </div>
-          <div class="rounded-2xl bg-white/5 subtle-border p-4">
-            <div id="stat2" class="text-lg font-semibold"></div>
-            <div id="stat2sub" class="text-sm text-white/60 mt-1"></div>
+          <p>You send references + vibe + what you stream. We confirm scope, format sizes, and deadline.</p>
+        </div>
+
+        <div class="step">
+          <div class="stepTop">
+            <h3>Concept</h3>
+            <span class="num">02</span>
           </div>
-          <div class="rounded-2xl bg-white/5 subtle-border p-4">
-            <div id="stat3" class="text-lg font-semibold"></div>
-            <div id="stat3sub" class="text-sm text-white/60 mt-1"></div>
+          <p>1–2 initial concepts. You pick a direction. This prevents “infinite wandering”.</p>
+        </div>
+
+        <div class="step">
+          <div class="stepTop">
+            <h3>Polish</h3>
+            <span class="num">03</span>
           </div>
+          <p>Clean lines, lighting, typography, background. Revisions are scoped and tracked.</p>
+        </div>
+
+        <div class="step">
+          <div class="stepTop">
+            <h3>Delivery</h3>
+            <span class="num">04</span>
+          </div>
+          <p>Final files + exports for Twitch/Kick/YouTube + a simple usage note (so you don’t guess).</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="rootline"></div>
+
+    <!-- PRICING -->
+    <section id="pricing">
+      <div class="sectionHead">
+        <h2>Packages (example pricing placeholders)</h2>
+        <p>Replace with Jodie’s real rates. These are intentionally “template” numbers.</p>
+      </div>
+
+      <div class="pricing">
+        <div class="priceCard">
+          <h3>Starter</h3>
+          <div class="price">$79 <small>from</small></div>
+          <ul class="ul">
+            <li>1 logo card (clean badge)</li>
+            <li>Color variants</li>
+            <li>Web + stream export set</li>
+            <li>1 revision round</li>
+          </ul>
+          <p class="fine">Good for: new channels that need to look legit fast.</p>
+          <a class="btn" href="#contact" style="margin-top:12px; width:100%">Request Starter</a>
+        </div>
+
+        <div class="priceCard featured">
+          <h3>Creator Kit</h3>
+          <div class="price">$189 <small>from</small></div>
+          <ul class="ul">
+            <li>Logo card + banner</li>
+            <li>Panels / offline screen pack</li>
+            <li>2 revision rounds</li>
+            <li>Consistent style across assets</li>
+          </ul>
+          <p class="fine">Good for: Twitch/Kick pages + consistent visual identity.</p>
+          <a class="btn primary" href="#contact" style="margin-top:12px; width:100%">Request Creator Kit</a>
+        </div>
+
+        <div class="priceCard">
+          <h3>Brand Forge</h3>
+          <div class="price">$399 <small>from</small></div>
+          <ul class="ul">
+            <li>Mascot illustration</li>
+            <li>Banner + panels</li>
+            <li>Emote/badge starter set</li>
+            <li>Mini style guide</li>
+          </ul>
+          <p class="fine">Good for: teams/orgs or creators who want a full “premium” look.</p>
+          <a class="btn gold" href="#contact" style="margin-top:12px; width:100%">Request Brand Forge</a>
         </div>
       </div>
 
-      <div class="md:col-span-5">
-        <div class="rounded-3xl bg-white/5 subtle-border p-6 relative overflow-hidden grain">
-          <div class="flex items-center justify-between">
-            <div class="text-sm text-white/70">Investor Snapshot</div>
-            <div class="text-xs text-white/60">personal / early-stage</div>
+      <div class="helper" style="margin-top:12px">
+        <b>Payment + safety:</b> keep it professional. Use invoices, milestones, and clear deliverables.
+        (This protects both the artist and the client — and matches Jodie’s careful tone.)
+      </div>
+    </section>
+
+    <div class="rootline"></div>
+
+    <!-- CONTACT -->
+    <section id="contact" class="glass" style="padding:14px">
+      <div class="sectionHead" style="margin-top:0">
+        <h2>Contact / Commission request</h2>
+        <p>This form is UI-only. Hook it to email/Discord later (or keep it simple).</p>
+      </div>
+
+      <div class="contact">
+        <div class="form">
+          <h3 style="margin:0 0 8px; font-size:14px">Request a quote</h3>
+          <p style="margin:0; color:var(--muted); font-size:13px">
+            Give the minimum info needed to start. No essays required.
+          </p>
+
+          <label>Name / Handle</label>
+          <input placeholder="e.g., Maneit / YourChannelName" />
+
+          <label>Platform</label>
+          <select>
+            <option>Twitch</option>
+            <option>Kick</option>
+            <option>YouTube</option>
+            <option>TikTok</option>
+            <option>Other</option>
+          </select>
+
+          <label>What do you need?</label>
+          <input placeholder="Logo • Banner • Mascot • Panels • Emotes • Full kit" />
+
+          <label>Describe the vibe (3–10 words)</label>
+          <input placeholder="e.g., Nordic myth • clean esports • dark sci-fi • cute chaos" />
+
+          <label>Notes + references</label>
+          <textarea placeholder="Links, inspirations, colors you love/hate, deadlines, sizes if you know them."></textarea>
+
+          <div class="formActions">
+            <button class="btn primary" type="button" onclick="fakeSubmit()">Send request</button>
+            <a class="btn ghost" href="#portfolio">See samples again</a>
           </div>
 
-          <div class="mt-4 space-y-3">
-            <div class="rounded-2xl bg-black/30 subtle-border p-4">
-              <div class="text-xs text-white/60">What you’re backing</div>
-              <div id="snapshot1" class="mt-1 font-semibold"></div>
-              <div id="snapshot1sub" class="mt-1 text-sm text-white/70 leading-relaxed"></div>
-            </div>
+          <div class="tiny">
+            <b>Privacy note:</b> don’t paste private info. Keep it practical (references + vibe + deliverables).
+          </div>
+        </div>
 
-            <div class="rounded-2xl bg-black/30 subtle-border p-4">
-              <div class="text-xs text-white/60">Why it wins</div>
-              <div id="snapshot2" class="mt-1 font-semibold"></div>
-              <div id="snapshot2sub" class="mt-1 text-sm text-white/70 leading-relaxed"></div>
-            </div>
+        <div class="form">
+          <h3 style="margin:0 0 8px; font-size:14px">Direct options</h3>
+          <p style="margin:0; color:var(--muted); font-size:13px">
+            If you prefer fast coordination:
+          </p>
 
-            <div class="rounded-2xl bg-black/30 subtle-border p-4">
-              <div class="text-xs text-white/60">What I need</div>
-              <div id="snapshot3" class="mt-1 font-semibold"></div>
-              <div id="snapshot3sub" class="mt-1 text-sm text-white/70 leading-relaxed"></div>
+          <div class="rootline"></div>
+
+          <div class="card" style="margin:0; background:rgba(255,255,255,.03)">
+            <h3 style="margin:0 0 8px">Discord</h3>
+            <p style="margin:0; color:var(--muted)">
+              Emotional Gaming community hub (where she first reached out).
+            </p>
+            <div style="margin-top:10px">
+              <a class="btn" href="https://discord.gg/qG6negyrYn" target="_blank" rel="noopener" style="width:100%">Open Discord invite</a>
             </div>
           </div>
 
-          <div class="mt-5 text-xs text-white/55">
-            Tip: This page is intentionally clean and “trust-first”. Videos + proof below.
+          <div class="rootline"></div>
+
+          <div class="card" style="margin:0; background:rgba(255,255,255,.03)">
+            <h3 style="margin:0 0 8px">Website</h3>
+            <p style="margin:0; color:var(--muted)">
+              She mentioned you can find her by searching for <b>eisp.io</b> on Google.
+            </p>
+            <div style="margin-top:10px">
+              <a class="btn ghost" href="#" onclick="copyText('eisp.io'); return false;" style="width:100%">Copy “eisp.io”</a>
+            </div>
+          </div>
+
+          <div class="rootline"></div>
+
+          <div class="tiny">
+            <b>Commission etiquette:</b> clear scope → clear price → clear deadline.
+            That “careful but genuine” tone is exactly what professional collaboration looks like.
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- TRUST STRIP -->
-  <section class="border-y border-white/10 bg-white/5">
-    <div class="mx-auto max-w-[1120px] px-4 py-6">
-      <div class="grid md:grid-cols-3 gap-4">
-        <div class="rounded-2xl bg-black/20 subtle-border p-4">
-          <div class="text-sm font-semibold">Craft + Systems</div>
-          <div class="text-sm text-white/65 mt-1">Physical products with obsessive finish, built on repeatable processes.</div>
-        </div>
-        <div class="rounded-2xl bg-black/20 subtle-border p-4">
-          <div class="text-sm font-semibold">Demonstrable</div>
-          <div class="text-sm text-white/65 mt-1">Not theory. Prototypes, live builds, and proof on video.</div>
-        </div>
-        <div class="rounded-2xl bg-black/20 subtle-border p-4">
-          <div class="text-sm font-semibold">Expandable</div>
-          <div class="text-sm text-white/65 mt-1">Start focused → scale into a brand and product line with content.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- WORK -->
-  <section id="work" class="mx-auto max-w-[1120px] px-4 py-12 md:py-16">
-    <div class="flex items-end justify-between gap-6">
+    <footer>
+      <div class="rootline"></div>
       <div>
-        <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">What I’m Building</h2>
-        <p class="mt-2 text-white/70 max-w-2xl leading-relaxed">
-          A focused, premium craft brand with content-driven growth — built like a product company, not a hobby.
-        </p>
+        Yggdrasil Studio • Template portal for showcasing commissioned graphic design •
+        Replace placeholders (rates, links, policy) with Jodie’s official info.
       </div>
-      <div class="hidden md:block text-sm text-white/60">
-        Clean. Repeatable. Sellable.
-      </div>
-    </div>
-
-    <div id="pillars" class="mt-8 grid md:grid-cols-3 gap-4"></div>
-
-    <div class="mt-10 grid lg:grid-cols-12 gap-6">
-      <div class="lg:col-span-7 rounded-3xl bg-white/5 subtle-border p-6">
-        <div class="flex items-center justify-between">
-          <div class="text-sm text-white/70">The “why me” angle</div>
-          <div class="text-xs text-white/60">credibility + clarity</div>
-        </div>
-        <h3 id="whyTitle" class="mt-3 text-xl font-semibold tracking-tight"></h3>
-        <p id="whyBody" class="mt-3 text-white/70 leading-relaxed"></p>
-
-        <div class="mt-6 grid sm:grid-cols-2 gap-3">
-          <div class="rounded-2xl bg-black/30 subtle-border p-4">
-            <div class="text-xs text-white/60">Method</div>
-            <div id="whyPoint1" class="mt-1 font-semibold"></div>
-            <div id="whyPoint1sub" class="mt-1 text-sm text-white/70"></div>
-          </div>
-          <div class="rounded-2xl bg-black/30 subtle-border p-4">
-            <div class="text-xs text-white/60">Style</div>
-            <div id="whyPoint2" class="mt-1 font-semibold"></div>
-            <div id="whyPoint2sub" class="mt-1 text-sm text-white/70"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="lg:col-span-5 rounded-3xl bg-white/5 subtle-border p-6">
-        <div class="text-sm text-white/70">Proof & Deliverables</div>
-        <div class="mt-4 space-y-3" id="proofList"></div>
-        <div class="mt-5 rounded-2xl bg-black/30 subtle-border p-4">
-          <div class="text-xs text-white/60">Next milestone</div>
-          <div id="milestone" class="mt-1 font-semibold"></div>
-          <div id="milestoneSub" class="mt-1 text-sm text-white/70"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- VIDEOS -->
-  <section id="videos" class="border-y border-white/10 bg-white/5">
-    <div class="mx-auto max-w-[1120px] px-4 py-12 md:py-16">
-      <div class="flex items-end justify-between gap-6">
-        <div>
-          <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Video Updates</h2>
-          <p class="mt-2 text-white/70 max-w-2xl leading-relaxed">
-            Add YouTube IDs to the config and this grid updates automatically. Perfect for investor check-ins.
-          </p>
-        </div>
-        <div class="text-sm text-white/60">No platform lock-in. Local file works.</div>
-      </div>
-
-      <div id="videoGrid" class="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-    </div>
-  </section>
-
-  <!-- PLAN -->
-  <section id="plan" class="mx-auto max-w-[1120px] px-4 py-12 md:py-16">
-    <div class="grid lg:grid-cols-12 gap-6 items-start">
-      <div class="lg:col-span-5 rounded-3xl bg-white/5 subtle-border p-6">
-        <div class="text-sm text-white/70">Investment Plan (simple + honest)</div>
-        <h2 class="mt-3 text-2xl md:text-3xl font-semibold tracking-tight">What €100k unlocks</h2>
-        <p id="fundingBody" class="mt-3 text-white/70 leading-relaxed"></p>
-
-        <div class="mt-6 space-y-3" id="fundingBreakdown"></div>
-      </div>
-
-      <div class="lg:col-span-7 rounded-3xl bg-white/5 subtle-border p-6">
-        <div class="flex items-center justify-between">
-          <div class="text-sm text-white/70">Roadmap</div>
-          <div class="text-xs text-white/60">practical steps</div>
-        </div>
-
-        <div id="roadmap" class="mt-5 space-y-3"></div>
-
-        <div class="mt-6 rounded-2xl bg-black/30 subtle-border p-4">
-          <div class="text-xs text-white/60">Investor promise</div>
-          <div id="promise" class="mt-1 font-semibold"></div>
-          <div id="promiseSub" class="mt-1 text-sm text-white/70"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" class="border-t border-white/10 bg-white/5">
-    <div class="mx-auto max-w-[1120px] px-4 py-12 md:py-16">
-      <div class="grid md:grid-cols-12 gap-6 items-start">
-        <div class="md:col-span-7">
-          <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Let’s do this clean and professionally.</h2>
-          <p class="mt-3 text-white/70 leading-relaxed">
-            If you want, I can send a one-page PDF summary + a short video update cadence so you always know exactly how things are progressing.
-          </p>
-
-          <div class="mt-6 grid sm:grid-cols-2 gap-3">
-            <div class="rounded-2xl bg-black/30 subtle-border p-4">
-              <div class="text-xs text-white/60">Email</div>
-              <div id="email" class="mt-1 font-semibold"></div>
-            </div>
-            <div class="rounded-2xl bg-black/30 subtle-border p-4">
-              <div class="text-xs text-white/60">Location</div>
-              <div id="location" class="mt-1 font-semibold"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="md:col-span-5">
-          <div class="rounded-3xl bg-black/30 subtle-border p-6">
-            <div class="text-sm text-white/70">Quick message template</div>
-            <div class="mt-3 text-white/80 leading-relaxed text-sm">
-              <p class="mb-3">“Hi — here’s the current build page with videos and milestones.</p>
-              <p class="mb-3">If you want to proceed, I’ll run a 30/60/90 plan and send weekly proof updates.”</p>
-              <p class="text-white/60">— <span id="signatureName"></span></p>
-            </div>
-
-            <a id="ctaSecondary" href="#videos" class="mt-5 inline-flex w-full items-center justify-center rounded-xl px-5 py-3 bg-white text-black font-semibold shadow-soft hover:opacity-95 transition">
-              Watch progress videos →
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <footer class="mt-10 flex flex-col md:flex-row gap-3 items-start md:items-center justify-between text-xs text-white/45">
-        <div>© <span id="year"></span> <span id="footerName"></span>. Built as a simple, editable single-file site.</div>
-        <div class="text-white/45">Local-first • GitHub-ready • YouTube-ready</div>
-      </footer>
-    </div>
-  </section>
+    </footer>
+  </main>
 
   <script>
-    // =========================
-    // EASY UPDATE CONFIG (edit only this)
-    // =========================
-    const CONFIG = {
-      brandName: "Maneit",
-      brandTagline: "Craft • Design • Systems",
-      heroBadge: "Private investor overview (personal)",
-      heroTitle: "A premium craft brand built with product-level discipline.",
-      heroSubtitle:
-        "I build physical products with obsessive finish — and I build the systems behind them so the work becomes repeatable, sellable, and scalable. This page is a clean overview for a personal investor, with video proof and milestones.",
-      ctaPrimaryText: "Schedule a chat",
+    function copyText(t){
+      navigator.clipboard.writeText(t).then(()=>{
+        toast("Copied ✓");
+      }).catch(()=>toast("Copy failed"));
+    }
 
-      stats: [
-        { value: "Premium craft", sub: "Leather goods + maker standards" },
-        { value: "Content-driven", sub: "YouTube proof + trust loop" },
-        { value: "System-built", sub: "Repeatable process → scalable brand" }
-      ],
+    function fakeSubmit(){
+      toast("Request captured (UI only). Hook this to email/Discord later.");
+    }
 
-      snapshot: {
-        oneTitle: "A focused craft business",
-        oneSub: "A product-line with a clear identity, quality baseline, and a repeatable pipeline.",
-        twoTitle: "Proof beats promises",
-        twoSub: "Weekly video updates + clear milestones + visible output. No guessing.",
-        threeTitle: "Capital = speed",
-        threeSub: "Tools, materials, branding, and time to produce consistent inventory + content."
-      },
-
-      pillars: [
-        {
-          title: "Leather Line (Core)",
-          body: "A small number of products done extremely well: wallets, cardholders, belts, desk mats — refined and branded.",
-          icon: "✦"
-        },
-        {
-          title: "Brand + Content (Growth)",
-          body: "YouTube becomes the proof engine: process, quality, iterations, and behind-the-scenes building trust.",
-          icon: "▣"
-        },
-        {
-          title: "Systems (Scale)",
-          body: "Templates, jigs, checklists, packaging standards, and a repeatable pipeline. This is how it becomes a business.",
-          icon: "⟡"
-        }
-      ],
-
-      why: {
-        title: "Why this isn’t a hobby",
-        body:
-          "I work like a product builder: tight scope, high quality floor, iteration loops, and proof updates. The goal is a brand that can survive beyond motivation — because the system carries the output.",
-        point1: { title: "Repeatable pipeline", sub: "Design → prototype → standardize → produce → ship → improve." },
-        point2: { title: "Premium minimal aesthetic", sub: "A clean Scandinavian look that signals quality and restraint." }
-      },
-
-      proof: [
-        { title: "Product prototypes (weekly)", sub: "Visible physical progress with a defined quality baseline." },
-        { title: "YouTube updates", sub: "Proof-first: what was built, what changed, what’s next." },
-        { title: "Brand kit v1", sub: "Name, palette, packaging style, product photos, storefront-ready copy." }
-      ],
-
-      milestone: {
-        title: "First sellable batch + consistent video cadence",
-        sub: "A small product set with consistent finishing + packaging + repeatable production notes."
-      },
-
-      videos: [
-        // Replace these with YOUR YouTube video IDs (the part after v= in the URL)
-        // Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ  -> "dQw4w9WgXcQ"
-        { id: "dQw4w9WgXcQ", title: "Update #1 — Vision + setup" },
-        { id: "dQw4w9WgXcQ", title: "Update #2 — First prototypes" },
-        { id: "dQw4w9WgXcQ", title: "Update #3 — Finishing + packaging" }
-      ],
-
-      funding: {
-        body:
-          "The goal is not to burn money — it’s to buy speed and consistency. The investment enables stable production, clean branding, and a steady cadence of proof through content.",
-        breakdown: [
-          { label: "Tools + equipment", value: "€25k", sub: "Press, cutting, finishing, photography basics, workspace setup." },
-          { label: "Materials + inventory", value: "€25k", sub: "Leather, hardware, packaging, prototypes → sellable stock." },
-          { label: "Brand + storefront", value: "€15k", sub: "Brand kit, product photos, simple e-com setup." },
-          { label: "Runway + operations", value: "€35k", sub: "Time allocation, shipping, iteration, buffer for consistency." }
-        ]
-      },
-
-      roadmap: [
-        { phase: "0–30 days", title: "Foundation + first sellable prototypes", sub: "Tools, materials, product selection, quality baseline, first videos." },
-        { phase: "30–60 days", title: "Small product line + packaging standard", sub: "Repeatable process, consistent finishing, first customer feedback loop." },
-        { phase: "60–90 days", title: "Inventory cadence + growth loop", sub: "Reliable output, content pipeline, brand trust compounding." }
-      ],
-
-      promise: {
-        title: "Weekly proof updates. Monthly milestone review.",
-        sub: "You always know what’s happening — in clear language, with visible results."
-      },
-
-      contact: {
-        email: "your.email@example.com",
-        location: "Germany (local-first, global shipping later)",
-        signatureName: "Kristoffer"
+    // Tiny toast
+    let toastEl;
+    function toast(msg){
+      if(!toastEl){
+        toastEl = document.createElement("div");
+        toastEl.style.position = "fixed";
+        toastEl.style.left = "50%";
+        toastEl.style.bottom = "18px";
+        toastEl.style.transform = "translateX(-50%)";
+        toastEl.style.padding = "10px 12px";
+        toastEl.style.borderRadius = "14px";
+        toastEl.style.background = "rgba(0,0,0,.65)";
+        toastEl.style.border = "1px solid rgba(255,255,255,.14)";
+        toastEl.style.color = "rgba(255,255,255,.92)";
+        toastEl.style.boxShadow = "0 18px 40px rgba(0,0,0,.45)";
+        toastEl.style.fontSize = "13px";
+        toastEl.style.zIndex = "999";
+        toastEl.style.backdropFilter = "blur(8px)";
+        document.body.appendChild(toastEl);
       }
-    };
-
-    // =========================
-    // Render helpers
-    // =========================
-    const $ = (id) => document.getElementById(id);
-
-    function setText(id, text) { const el = $(id); if (el) el.textContent = text; }
-    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
-
-    // top
-    setText("brandName", CONFIG.brandName);
-    setText("brandTagline", CONFIG.brandTagline);
-    setText("heroBadge", CONFIG.heroBadge);
-    setText("heroTitle", CONFIG.heroTitle);
-    setText("heroSubtitle", CONFIG.heroSubtitle);
-    setText("ctaPrimaryText", CONFIG.ctaPrimaryText);
-
-    // stats
-    setText("stat1", CONFIG.stats[0].value); setText("stat1sub", CONFIG.stats[0].sub);
-    setText("stat2", CONFIG.stats[1].value); setText("stat2sub", CONFIG.stats[1].sub);
-    setText("stat3", CONFIG.stats[2].value); setText("stat3sub", CONFIG.stats[2].sub);
-
-    // snapshot
-    setText("snapshot1", CONFIG.snapshot.oneTitle);
-    setText("snapshot1sub", CONFIG.snapshot.oneSub);
-    setText("snapshot2", CONFIG.snapshot.twoTitle);
-    setText("snapshot2sub", CONFIG.snapshot.twoSub);
-    setText("snapshot3", CONFIG.snapshot.threeTitle);
-    setText("snapshot3sub", CONFIG.snapshot.threeSub);
-
-    // pillars
-    const pillars = document.getElementById("pillars");
-    pillars.innerHTML = CONFIG.pillars.map(p => `
-      <div class="rounded-3xl bg-white/5 subtle-border p-6">
-        <div class="flex items-center gap-3">
-          <div class="h-10 w-10 rounded-2xl bg-black/30 subtle-border flex items-center justify-center text-lg">
-            ${escapeHtml(p.icon)}
-          </div>
-          <div class="font-semibold">${escapeHtml(p.title)}</div>
-        </div>
-        <p class="mt-3 text-white/70 leading-relaxed">${escapeHtml(p.body)}</p>
-      </div>
-    `).join("");
-
-    // why
-    setText("whyTitle", CONFIG.why.title);
-    setText("whyBody", CONFIG.why.body);
-    setText("whyPoint1", CONFIG.why.point1.title);
-    setText("whyPoint1sub", CONFIG.why.point1.sub);
-    setText("whyPoint2", CONFIG.why.point2.title);
-    setText("whyPoint2sub", CONFIG.why.point2.sub);
-
-    // proof
-    const proofList = document.getElementById("proofList");
-    proofList.innerHTML = CONFIG.proof.map(item => `
-      <div class="rounded-2xl bg-black/30 subtle-border p-4">
-        <div class="font-semibold">${escapeHtml(item.title)}</div>
-        <div class="mt-1 text-sm text-white/70">${escapeHtml(item.sub)}</div>
-      </div>
-    `).join("");
-
-    // milestone
-    setText("milestone", CONFIG.milestone.title);
-    setText("milestoneSub", CONFIG.milestone.sub);
-
-    // videos
-    const videoGrid = document.getElementById("videoGrid");
-    videoGrid.innerHTML = CONFIG.videos.map(v => `
-      <div class="rounded-3xl bg-black/30 subtle-border overflow-hidden">
-        <div class="aspect-video w-full bg-black">
-          <iframe
-            class="w-full h-full"
-            src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}"
-            title="${escapeHtml(v.title)}"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen></iframe>
-        </div>
-        <div class="p-4">
-          <div class="font-semibold">${escapeHtml(v.title)}</div>
-          <div class="mt-1 text-sm text-white/60">YouTube embed • privacy-enhanced mode</div>
-        </div>
-      </div>
-    `).join("");
-
-    // funding
-    setText("fundingBody", CONFIG.funding.body);
-    const fundingBreakdown = document.getElementById("fundingBreakdown");
-    fundingBreakdown.innerHTML = CONFIG.funding.breakdown.map(x => `
-      <div class="rounded-2xl bg-black/30 subtle-border p-4">
-        <div class="flex items-center justify-between gap-3">
-          <div class="font-semibold">${escapeHtml(x.label)}</div>
-          <div class="text-white/90 font-semibold">${escapeHtml(x.value)}</div>
-        </div>
-        <div class="mt-1 text-sm text-white/70">${escapeHtml(x.sub)}</div>
-      </div>
-    `).join("");
-
-    // roadmap
-    const roadmap = document.getElementById("roadmap");
-    roadmap.innerHTML = CONFIG.roadmap.map((r, idx) => `
-      <div class="rounded-2xl bg-black/30 subtle-border p-4">
-        <div class="flex items-center justify-between gap-3">
-          <div class="text-xs text-white/60">${escapeHtml(r.phase)}</div>
-          <div class="text-xs text-white/60">Step ${idx+1}</div>
-        </div>
-        <div class="mt-1 font-semibold">${escapeHtml(r.title)}</div>
-        <div class="mt-1 text-sm text-white/70">${escapeHtml(r.sub)}</div>
-      </div>
-    `).join("");
-
-    // promise
-    setText("promise", CONFIG.promise.title);
-    setText("promiseSub", CONFIG.promise.sub);
-
-    // contact
-    setText("email", CONFIG.contact.email);
-    setText("location", CONFIG.contact.location);
-    setText("signatureName", CONFIG.contact.signatureName);
-
-    // footer
-    setText("year", new Date().getFullYear());
-    setText("footerName", CONFIG.brandName);
+      toastEl.textContent = msg;
+      toastEl.style.opacity = "1";
+      clearTimeout(toastEl._t);
+      toastEl._t = setTimeout(()=>{ toastEl.style.opacity="0"; }, 1100);
+    }
   </script>
 </body>
 </html>
-
