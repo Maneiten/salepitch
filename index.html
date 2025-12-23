@@ -1,1617 +1,403 @@
-
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Maneit — Friends & Volunteers (Internal)</title>
-  <style>
-    :root{
-      --bg:#0b0f14;
-      --panel:#0f1622;
-      --panel2:#0c121b;
-      --text:#d7e0ea;
-      --muted:#94a3b8;
-      --line:rgba(255,255,255,.08);
-      --good:#25c2a0;
-      --warn:#ffb020;
-      --accent:#5eead4;
-      --accent2:#fbbf24;
-      --red:#ff4d6d;
-      --shadow: 0 18px 60px rgba(0,0,0,.45);
-      --radius: 18px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:var(--sans);
-      background: radial-gradient(1200px 900px at 50% -10%, rgba(94,234,212,.13), transparent 55%),
-                  radial-gradient(900px 700px at 90% 20%, rgba(251,191,36,.10), transparent 55%),
-                  radial-gradient(900px 700px at 10% 25%, rgba(94,234,212,.06), transparent 55%),
-                  linear-gradient(180deg, #06080b 0%, var(--bg) 40%, #05070a 100%);
-      color:var(--text);
-      overflow-x:hidden;
-    }
-
-    /* Background "Yggdrasil-ish" */
-    .bg{
-      position:fixed; inset:0;
-      pointer-events:none;
-      opacity:.65;
-      filter:saturate(1.1) contrast(1.05);
-    }
-    .bg svg{
-      width:100%; height:100%;
-    }
-
-    /* Layout */
-    .app{
-      position:relative;
-      min-height:100vh;
-      display:grid;
-      grid-template-columns: 340px 1fr;
-      gap:16px;
-      padding:16px;
-    }
-    @media (max-width: 980px){
-      .app{grid-template-columns: 1fr; padding:12px}
-      .sidebar{position:sticky; top:12px; z-index:10}
-    }
-
-    .sidebar{
-      background: linear-gradient(180deg, rgba(15,22,34,.85), rgba(12,18,27,.78));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      padding:14px;
-      align-self:start;
-    }
-
-    .main{
-      background: linear-gradient(180deg, rgba(15,22,34,.62), rgba(12,18,27,.58));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      padding:18px;
-      overflow:hidden;
-    }
-
-    /* Header */
-    .brand{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      padding:8px 8px 10px 8px;
-    }
-    .logo{
-      width:40px;height:40px;border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(circle at 30% 30%, rgba(94,234,212,.9), rgba(94,234,212,.0) 60%),
-        radial-gradient(circle at 70% 70%, rgba(251,191,36,.6), rgba(251,191,36,.0) 60%),
-        linear-gradient(135deg, rgba(15,22,34,.9), rgba(10,14,19,.9));
-      box-shadow: 0 10px 35px rgba(94,234,212,.12);
-    }
-    .brand h1{
-      margin:0;
-      font-size:16px;
-      letter-spacing:.4px;
-      line-height:1.1;
-    }
-    .brand .sub{
-      margin-top:4px;
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    /* Controls */
-    .controls{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin:8px 0 10px;
-      padding:8px;
-      border-top:1px solid var(--line);
-      border-bottom:1px solid var(--line);
-    }
-    .control{
-      background: rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius: 14px;
-      padding:10px;
-    }
-    .control label{
-      display:block;
-      font-size:11px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
-    .row{
-      display:flex; gap:8px; align-items:center;
-    }
-    input[type="text"], input[type="number"], select{
-      width:100%;
-      background: rgba(0,0,0,.25);
-      color:var(--text);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: 12px;
-      padding:10px 10px;
-      outline:none;
-    }
-    input[type="number"]{font-family:var(--mono)}
-    .btn{
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color:var(--text);
-      border-radius: 12px;
-      padding:10px 10px;
-      transition: transform .08s ease, background .2s ease;
-      user-select:none;
-      font-weight:600;
-      letter-spacing:.2px;
-      white-space:nowrap;
-    }
-    .btn:active{transform: translateY(1px)}
-    .btn.primary{
-      background: linear-gradient(135deg, rgba(94,234,212,.22), rgba(251,191,36,.12));
-      border-color: rgba(94,234,212,.28);
-    }
-    .btn.danger{
-      border-color: rgba(255,77,109,.35);
-      background: rgba(255,77,109,.08);
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.2);
-      font-size:12px;
-      color:var(--muted);
-      margin:8px 0 0;
-      width:100%;
-      justify-content:space-between;
-    }
-    .pill b{color:var(--text)}
-    .kbd{
-      font-family: var(--mono);
-      font-size:11px;
-      color:#cbd5e1;
-      padding:3px 7px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-    }
-
-    /* Timer */
-    .timer{
-      margin-top:10px;
-      padding:10px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-    }
-    .timer .title{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
-      margin-bottom:8px;
-    }
-    .timer .title span{
-      font-size:12px; color:var(--muted);
-    }
-    .clock{
-      font-family: var(--mono);
-      font-size: 24px;
-      letter-spacing: .5px;
-      padding:10px 12px;
-      border-radius: 14px;
-      border:1px dashed rgba(255,255,255,.16);
-      background: rgba(255,255,255,.04);
-      text-align:center;
-    }
-    .timer .bar{
-      height:10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.08);
-      overflow:hidden;
-      margin:10px 0 10px;
-    }
-    .timer .bar > div{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(94,234,212,.75), rgba(251,191,36,.65));
-    }
-    .timer .actions{
-      display:flex; gap:8px; flex-wrap:wrap;
-    }
-    .timer small{color:var(--muted)}
-
-    /* Nav */
-    .nav{
-      margin-top:10px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .nav a{
-      text-decoration:none;
-      color:var(--text);
-      padding:10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.08);
-      background: rgba(0,0,0,.18);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      transition: background .2s ease, border-color .2s ease, transform .08s ease;
-    }
-    .nav a:hover{
-      background: rgba(94,234,212,.08);
-      border-color: rgba(94,234,212,.22);
-    }
-    .nav a.active{
-      background: rgba(94,234,212,.10);
-      border-color: rgba(94,234,212,.28);
-    }
-    .nav a .tag{
-      font-family: var(--mono);
-      font-size:11px;
-      color:rgba(255,255,255,.65);
-      opacity:.9;
-    }
-
-    /* Main content */
-    .topbar{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:12px;
-    }
-    .headline{
-      margin:0;
-      font-size:22px;
-      letter-spacing:.2px;
-    }
-    .lede{
-      margin:8px 0 0;
-      color:var(--muted);
-      line-height:1.45;
-      max-width: 900px;
-    }
-    .badges{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-    .badge{
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      font-size:12px;
-      color:var(--muted);
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      white-space:nowrap;
-    }
-    .dot{
-      width:8px;height:8px;border-radius:999px;
-      background: var(--accent);
-      box-shadow: 0 0 18px rgba(94,234,212,.35);
-    }
-    .dot.warn{background: var(--accent2); box-shadow: 0 0 18px rgba(251,191,36,.35);}
-    .dot.red{background: var(--red); box-shadow: 0 0 18px rgba(255,77,109,.35);}
-
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:12px;
-      margin-top:14px;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns: repeat(6, 1fr);}
-    }
-    @media (max-width: 560px){
-      .grid{grid-template-columns: repeat(1, 1fr);}
-    }
-
-    .card{
-      grid-column: span 12;
-      background: linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.10));
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: var(--radius);
-      padding:14px;
-      box-shadow: 0 16px 46px rgba(0,0,0,.28);
-    }
-    .card h3{
-      margin:0;
-      font-size:15px;
-      letter-spacing:.2px;
-    }
-    .card p{margin:10px 0; color:rgba(215,224,234,.92); line-height:1.55}
-    .card ul{margin:10px 0 0; padding-left:18px; color:rgba(215,224,234,.92); line-height:1.55}
-    .card li{margin:6px 0}
-    .card .meta{
-      margin-top:10px;
-      color:var(--muted);
-      font-size:12px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .chip{
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      font-family: var(--mono);
-      font-size: 11px;
-      color: rgba(255,255,255,.72);
-    }
-
-    .twocol{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:12px;
-    }
-    @media (max-width: 980px){.twocol{grid-template-columns: 1fr}}
-
-    .details{
-      border-top:1px solid rgba(255,255,255,.08);
-      margin-top:10px;
-      padding-top:10px;
-    }
-    details{
-      border:1px solid rgba(255,255,255,.08);
-      background: rgba(0,0,0,.18);
-      border-radius: 14px;
-      padding:10px 12px;
-      margin-top:10px;
-    }
-    summary{
-      cursor:pointer;
-      font-weight:700;
-      letter-spacing:.2px;
-      color: rgba(215,224,234,.95);
-      outline:none;
-    }
-    details p, details ul{color: rgba(215,224,234,.90)}
-    .mono{
-      font-family: var(--mono);
-      font-size: 12px;
-      color: rgba(255,255,255,.75);
-      background: rgba(0,0,0,.22);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: 14px;
-      padding:10px 12px;
-      overflow:auto;
-    }
-
-    /* Progress */
-    .progress{
-      position:fixed;
-      left:0; top:0; height:3px; width:100%;
-      background: rgba(255,255,255,.06);
-      z-index: 50;
-    }
-    .progress > div{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(94,234,212,.85), rgba(251,191,36,.75));
-      box-shadow: 0 0 18px rgba(94,234,212,.28);
-    }
-
-    /* Footer */
-    .footer{
-      margin-top:14px;
-      color:var(--muted);
-      font-size:12px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      border-top:1px solid var(--line);
-      padding-top:12px;
-    }
-
-    /* Highlight search */
-    mark{
-      background: rgba(251,191,36,.22);
-      color: var(--text);
-      padding: 0 .15em;
-      border-radius: .25em;
-    }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Maneit — AI, Explained Properly</title>
+  <meta name="description" content="A deep, practical explanation of what AI is, what it is not, and how to use it correctly — ADHD/autism friendly." />
+  <link rel="stylesheet" href="assets/styles.css" />
 </head>
-
 <body>
-  <div class="progress"><div id="progressBar"></div></div>
+  <a class="skip" href="#main">Skip to content</a>
 
-  <div class="bg" aria-hidden="true">
-    <!-- Subtle "World Tree" SVG -->
-    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <linearGradient id="g1" x1="0" x2="1">
-          <stop offset="0" stop-color="rgba(94,234,212,.35)"/>
-          <stop offset="1" stop-color="rgba(251,191,36,.22)"/>
-        </linearGradient>
-        <filter id="blur">
-          <feGaussianBlur stdDeviation="8"/>
-        </filter>
-      </defs>
-
-      <!-- Particles -->
-      <g id="particles" opacity=".7"></g>
-
-      <!-- Tree glow -->
-      <path d="M600,760 C560,650 585,560 600,500 C620,430 610,360 600,300 C585,230 520,180 470,145
-               C540,190 585,240 600,260 C620,240 690,190 740,150
-               C700,190 640,230 610,300 C600,350 630,430 650,480
-               C690,560 660,650 620,760 Z"
-            fill="url(#g1)" opacity=".09" filter="url(#blur)"/>
-
-      <!-- Branch lines -->
-      <g opacity=".22" stroke="rgba(94,234,212,.75)" stroke-width="2" fill="none">
-        <path d="M600 610 C560 560, 520 520, 460 490"/>
-        <path d="M600 585 C640 540, 690 510, 760 485"/>
-        <path d="M600 520 C560 470, 520 430, 440 390"/>
-        <path d="M600 500 C650 455, 700 420, 820 385"/>
-        <path d="M600 430 C560 385, 520 345, 450 300"/>
-        <path d="M600 420 C650 375, 720 335, 840 290"/>
-      </g>
-
-      <!-- Trunk -->
-      <path d="M575 760 C560 650, 585 560, 600 500 C620 430, 610 360, 600 300
-               C585 230, 560 180, 600 150
-               C640 180, 615 230, 600 300
-               C590 360, 610 430, 630 500
-               C660 600, 640 690, 625 760 Z"
-            fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.06)" />
-
-      <!-- Nodes -->
-      <g opacity=".55">
-        <circle cx="460" cy="490" r="8" fill="rgba(94,234,212,.8)"/>
-        <circle cx="760" cy="485" r="8" fill="rgba(251,191,36,.75)"/>
-        <circle cx="440" cy="390" r="8" fill="rgba(94,234,212,.75)"/>
-        <circle cx="820" cy="385" r="8" fill="rgba(251,191,36,.7)"/>
-        <circle cx="450" cy="300" r="8" fill="rgba(94,234,212,.7)"/>
-        <circle cx="840" cy="290" r="8" fill="rgba(251,191,36,.65)"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="app">
-    <aside class="sidebar">
+  <header class="topbar">
+    <div class="topbar__inner">
       <div class="brand">
-        <div class="logo"></div>
-        <div>
-          <h1>Maneit — Internal</h1>
-          <div class="sub">Friends & volunteers • honest view • EN/DE</div>
+        <div class="brand__mark" aria-hidden="true">◎</div>
+        <div class="brand__text">
+          <div class="brand__name">Maneit</div>
+          <div class="brand__tag" data-i18n="brand_tag">AI used correctly — calm, structured, serious</div>
         </div>
       </div>
 
-      <div class="controls">
-        <div class="control">
-          <label>Language / Sprache</label>
-          <div class="row">
-            <button class="btn primary" id="langEN">EN</button>
-            <button class="btn" id="langDE">DE</button>
-          </div>
-        </div>
-
-        <div class="control">
-          <label>Search (filters cards)</label>
-          <input id="searchBox" type="text" placeholder="Try: Jeff, Agent Factory, Emotional Gaming..." />
-        </div>
-
-        <div class="control" style="grid-column: 1 / -1;">
-          <label>Presentation mode</label>
-          <div class="row">
-            <button class="btn" id="expandAll">Expand all</button>
-            <button class="btn" id="collapseAll">Collapse all</button>
-            <button class="btn" id="nextBtn">Next <span class="kbd">→</span></button>
-          </div>
-        </div>
-      </div>
-
-      <div class="pill">
-        <span>Hotkeys</span>
-        <span>
-          <span class="kbd">/</span> search
-          <span class="kbd">←</span><span class="kbd">→</span> nav
-        </span>
-      </div>
-
-      <div class="timer" id="timer">
-        <div class="title">
-          <b id="timerTitle">Break Timer</b>
-          <span id="timerMode">idle</span>
-        </div>
-        <div class="row" style="gap:10px;">
-          <div style="flex:1;">
-            <label style="font-size:11px;color:var(--muted);margin:0 0 6px;display:block;">Minutes</label>
-            <input id="minutesInput" type="number" min="1" max="180" value="10" />
-          </div>
-          <div style="flex:1;">
-            <label style="font-size:11px;color:var(--muted);margin:0 0 6px;display:block;">Seconds</label>
-            <input id="secondsInput" type="number" min="0" max="59" value="0" />
-          </div>
-        </div>
-        <div class="clock" id="clock">10:00</div>
-        <div class="bar"><div id="barFill"></div></div>
-        <div class="actions">
-          <button class="btn primary" id="startTimer">Start</button>
-          <button class="btn" id="pauseTimer">Pause</button>
-          <button class="btn danger" id="resetTimer">Reset</button>
-        </div>
-        <small id="timerHint">Use this to time breaks or section pacing.</small>
-      </div>
-
-      <nav class="nav" id="nav">
-        <!-- Filled by JS -->
+      <nav class="nav" aria-label="Primary">
+        <a class="nav__link is-active" href="index.html" data-i18n="nav_home">Home</a>
+        <a class="nav__link" href="hivemind.html" data-i18n="nav_hivemind">Hivemind Reasoning Model</a>
+        <a class="nav__link" href="emotional-gaming.html" data-i18n="nav_emotional">Emotional Gaming</a>
       </nav>
 
-      <div class="footer">
-        <div>Build: <span class="chip">Maneit-WebDeck v1.0</span></div>
-        <div>Mode: <span class="chip">Internal / Honest</span></div>
-      </div>
-    </aside>
+      <div class="controls">
+        <label class="langSelect" for="langSelect" aria-label="Language">
+          <span class="langSelect__dot" aria-hidden="true"></span>
+          <select id="langSelect">
+            <option value="en">English</option>
+            <option value="no">Norsk</option>
+            <option value="de">Deutsch</option>
+            <option value="nl">Nederlands</option>
+            <option value="fr">Français</option>
+            <option value="uk">Українська</option>
+          </select>
+        </label>
 
-    <main class="main">
-      <div class="topbar">
-        <div>
-          <h2 class="headline" id="pageTitle">Maneit — the honest overview</h2>
-          <p class="lede" id="pageLede">
-            This is a transparent, friend-level presentation: what we’re building, why it exists, and what it actually takes to help.
-          </p>
+        <button class="chip" id="focusToggle" type="button">
+          <span class="chip__dot"></span><span data-i18n="ui_focus">Focus Mode</span>
+        </button>
+        <button class="chip" id="deepToggle" type="button">
+          <span class="chip__dot"></span><span data-i18n="ui_deep">Deep Dive</span>
+        </button>
+      </div>
+    </div>
+    <div class="readProgress" aria-hidden="true"><div class="readProgress__bar" id="readBar"></div></div>
+  </header>
+
+  <main id="main" class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero__left">
+        <div class="pill" data-i18n="hero_pill">This page is built for autism + ADHD: precise, structured, no fluff.</div>
+
+        <h1 class="hero__title" data-i18n="hero_title">
+          What AI actually is — when used correctly
+        </h1>
+
+        <p class="hero__lead" data-i18n="hero_lead">
+          Not a “magic app”. Not a money printer. Not a shortcut.
+          AI is a programmable reasoning-and-language engine: it turns instructions + context into structured output.
+        </p>
+
+        <div class="hero__ctaRow">
+          <a class="btn btn--primary" href="#startHere" data-i18n="hero_cta1">Start the explanation (step-by-step)</a>
+          <a class="btn btn--ghost" href="#whatItIsNot" data-i18n="hero_cta2">What AI is NOT</a>
         </div>
-        <div class="badges">
-          <div class="badge"><span class="dot"></span><span id="badge1">Reasoning-first</span></div>
-          <div class="badge"><span class="dot warn"></span><span id="badge2">Iterating live</span></div>
-          <div class="badge"><span class="dot red"></span><span id="badge3">Chaos included</span></div>
-        </div>
-      </div>
 
-      <div class="grid" id="content">
-        <!-- Sections inserted by JS -->
-      </div>
-
-      <div class="footer" style="margin-top:16px;">
-        <div id="footerLeft">Tip: Use search to filter the deck instantly.</div>
-        <div id="footerRight">Navigation highlights current section.</div>
-      </div>
-    </main>
-  </div>
-
-  <script>
-    // ---------- Content (EN + DE) ----------
-    const SECTIONS = [
-      {
-        id: "00_intro",
-        tag: "00",
-        en: {
-          title: "This is not a pitch. It’s an invitation.",
-          body: `
-            <p>We’re building Maneit as a long-term experiment in <b>structure, reasoning, and shared intelligence</b>.</p>
-            <p>This deck is written for <b>close friends and volunteers</b>. That means: no marketing. No hiding messy parts. No pretending we already “have it all solved.”</p>
-            <ul>
-              <li>We’re honest about what exists vs what’s planned.</li>
-              <li>We’re honest about the risks and the chaos.</li>
-              <li>We care about trust more than hype.</li>
-            </ul>
-          `,
-          meta: ["internal", "honest", "friends"]
-        },
-        de: {
-          title: "Das ist kein Pitch. Es ist eine Einladung.",
-          body: `
-            <p>Wir bauen Maneit als langfristiges Experiment für <b>Struktur, Reasoning und geteilte Intelligenz</b>.</p>
-            <p>Diese Präsentation ist für <b>enge Freunde und Freiwillige</b>. Also: kein Marketing. Nichts wird versteckt. Kein „wir haben schon alles gelöst“.</p>
-            <ul>
-              <li>Wir trennen klar: was existiert vs was geplant ist.</li>
-              <li>Wir sind ehrlich über Risiken und Chaos.</li>
-              <li>Vertrauen ist wichtiger als Hype.</li>
-            </ul>
-          `,
-          meta: ["intern", "ehrlich", "freunde"]
-        }
-      },
-      {
-        id: "10_hivemind",
-        tag: "10",
-        en: {
-          title: "Maneit Hivemind — what it is (and isn’t)",
-          body: `
-            <div class="twocol">
-              <div>
-                <p><b>Maneit is not one chatbot.</b> It’s a system: a reasoning core + domain agents + humans.</p>
-                <ul>
-                  <li><b>Core Reasoning</b>: stable thinking style (decompose → analyze → synthesize).</li>
-                  <li><b>Domain layers</b>: medicine, psychology, esports, creativity, cybersecurity, AI/ML, engineering, finance.</li>
-                  <li><b>Humans</b>: reality checks, corrections, lived experience, taste.</li>
-                </ul>
-                <p>We want it to feel like: <b>one brain</b>, many hands.</p>
-              </div>
-              <div>
-                <div class="mono">
-                  PRINCIPLE: Separation of concerns
-                  - Reasoning ≠ Knowledge
-                  - Knowledge ≠ Actions
-                  - Actions ≠ Authority
-                  - Humans remain the final gate
-                </div>
-                <div class="details">
-                  <details>
-                    <summary>What we avoid on purpose</summary>
-                    <ul>
-                      <li>Blind self-learning from random inputs</li>
-                      <li>“Trust me bro” authority answers</li>
-                      <li>Building a system that can’t be audited</li>
-                    </ul>
-                  </details>
-                </div>
-              </div>
-            </div>
-          `,
-          meta: ["architecture", "reasoning", "domains"]
-        },
-        de: {
-          title: "Maneit Hivemind — was es ist (und was nicht)",
-          body: `
-            <div class="twocol">
-              <div>
-                <p><b>Maneit ist nicht nur ein Chatbot.</b> Es ist ein System: Reasoning-Kern + Domänen-Agenten + Menschen.</p>
-                <ul>
-                  <li><b>Core Reasoning</b>: stabile Denkweise (zerlegen → analysieren → synthetisieren).</li>
-                  <li><b>Domänen-Layer</b>: Medizin, Psychologie, Esport, Kreativität, Cybersecurity, KI/ML, Engineering, Finanzen.</li>
-                  <li><b>Menschen</b>: Reality-Checks, Korrekturen, Erfahrung, Geschmack.</li>
-                </ul>
-                <p>Es soll sich anfühlen wie: <b>ein Gehirn</b>, viele Hände.</p>
-              </div>
-              <div>
-                <div class="mono">
-                  PRINZIP: Trennung von Zuständigkeiten
-                  - Reasoning ≠ Wissen
-                  - Wissen ≠ Handlungen
-                  - Handlungen ≠ Autorität
-                  - Menschen bleiben das letzte Gate
-                </div>
-                <div class="details">
-                  <details>
-                    <summary>Was wir absichtlich vermeiden</summary>
-                    <ul>
-                      <li>Blindes Selbstlernen aus zufälligen Inputs</li>
-                      <li>Autoritäts-Antworten ohne Begründung</li>
-                      <li>Ein System ohne Auditbarkeit</li>
-                    </ul>
-                  </details>
-                </div>
-              </div>
-            </div>
-          `,
-          meta: ["architektur", "reasoning", "domänen"]
-        }
-      },
-      {
-        id: "20_reasoning_core",
-        tag: "20",
-        en: {
-          title: "Our complete Reasoning Model (Maneit Core)",
-          body: `
-            <p>This is the heart: a stable, reusable reasoning standard. It adapts language + tone, but <b>does not change how it thinks</b>.</p>
-            <details open>
-              <summary>Core guarantees</summary>
-              <ul>
-                <li>Explicit assumptions</li>
-                <li>Tradeoffs and constraints restated</li>
-                <li>Clear uncertainty bands (fact vs inference vs hypothesis)</li>
-                <li>Structure-first outputs (models, steps, checklists)</li>
-              </ul>
-            </details>
-            <details>
-              <summary>Why we care</summary>
-              <p>If the reasoning core drifts, everything becomes unreliable: agents, automation, decisions, and trust.</p>
-            </details>
-          `,
-          meta: ["maneit-core", "epistemology", "quality"]
-        },
-        de: {
-          title: "Unser vollständiges Reasoning-Modell (Maneit Core)",
-          body: `
-            <p>Das ist der Kern: ein stabiler, wiederverwendbarer Reasoning-Standard. Sprache + Ton passen sich an, aber <b>die Denkweise bleibt stabil</b>.</p>
-            <details open>
-              <summary>Core-Garantien</summary>
-              <ul>
-                <li>Explizite Annahmen</li>
-                <li>Tradeoffs + Constraints werden wiederholt</li>
-                <li>Klare Unsicherheitsstufen (Fakt vs Inferenz vs Hypothese)</li>
-                <li>Struktur-first Outputs (Modelle, Schritte, Checklisten)</li>
-              </ul>
-            </details>
-            <details>
-              <summary>Warum das wichtig ist</summary>
-              <p>Wenn der Reasoning-Kern driftet, wird alles unzuverlässig: Agenten, Automatisierung, Entscheidungen und Vertrauen.</p>
-            </details>
-          `,
-          meta: ["maneit-core", "epistemologie", "qualität"]
-        }
-      },
-      {
-        id: "30_jeff",
-        tag: "30",
-        en: {
-          title: "Jeff — Personal Assistant (voice/text) + task routing",
-          body: `
-            <p>Jeff is not “a friendly chatbot.” Jeff is a <b>control interface</b> for attention and context.</p>
-            <details open>
-              <summary>Jeff’s workflow (simple version)</summary>
-              <ol>
-                <li>Listen (voice or text) → extract intent</li>
-                <li>Decompose into tasks</li>
-                <li>Route tasks to the right agent/tool</li>
-                <li>Collect results</li>
-                <li>Return a clean report (with next steps)</li>
-              </ol>
-            </details>
-            <details>
-              <summary>Why voice matters</summary>
-              <p>Voice reduces friction. It also forces us to build “real” flows instead of endless tab-hunting.</p>
-            </details>
-            <div class="mono">
-              Jeff output style (report):
-              - What you asked
-              - What I did
-              - What I found
-              - Risks/unknowns
-              - Next actions (1-5 bullets)
-            </div>
-          `,
-          meta: ["voice", "routing", "reporting"]
-        },
-        de: {
-          title: "Jeff — Personal Assistant (Voice/Text) + Task-Routing",
-          body: `
-            <p>Jeff ist kein „netter Chatbot“. Jeff ist ein <b>Control-Interface</b> für Aufmerksamkeit und Kontext.</p>
-            <details open>
-              <summary>Jeff-Workflow (einfach)</summary>
-              <ol>
-                <li>Zuhören (Voice/Text) → Intention extrahieren</li>
-                <li>In Tasks zerlegen</li>
-                <li>Tasks an passende Agenten/Tools routen</li>
-                <li>Ergebnisse sammeln</li>
-                <li>Strukturierten Report liefern (mit Next Steps)</li>
-              </ol>
-            </details>
-            <details>
-              <summary>Warum Voice wichtig ist</summary>
-              <p>Voice reduziert Reibung und zwingt uns zu echten Workflows statt Tab-Hunting.</p>
-            </details>
-            <div class="mono">
-              Jeff-Output (Report):
-              - Deine Anfrage
-              - Was ich gemacht habe
-              - Ergebnisse
-              - Risiken/Unbekanntes
-              - Next Actions (1-5 Bulletpoints)
-            </div>
-          `,
-          meta: ["voice", "routing", "reporting"]
-        }
-      },
-      {
-        id: "40_shared_learning",
-        tag: "40",
-        en: {
-          title: "Shared learning (without surveillance)",
-          body: `
-            <p>We don’t train on people. We learn from <b>patterns</b>.</p>
-            <ul>
-              <li>Corrections: when someone fixes output</li>
-              <li>Preferences: what style actually helps</li>
-              <li>Failures: where reasoning breaks</li>
-              <li>Clarity signals: what creates “aha” moments</li>
-            </ul>
-            <details>
-              <summary>The rule</summary>
-              <p>We never store “Filip is X” — we store “this interaction pattern produced better output.”</p>
-            </details>
-          `,
-          meta: ["privacy", "patterns", "learning"]
-        },
-        de: {
-          title: "Shared Learning (ohne Überwachung)",
-          body: `
-            <p>Wir trainieren keine Menschen. Wir lernen aus <b>Mustern</b>.</p>
-            <ul>
-              <li>Korrekturen: wenn jemand Output verbessert</li>
-              <li>Präferenzen: welcher Stil wirklich hilft</li>
-              <li>Fehler: wo Reasoning bricht</li>
-              <li>Klarheitssignale: was „Aha“-Momente auslöst</li>
-            </ul>
-            <details>
-              <summary>Die Regel</summary>
-              <p>Wir speichern nie „Person X ist Y“ — wir speichern „dieses Interaktionsmuster erzeugte bessere Ergebnisse“.</p>
-            </details>
-          `,
-          meta: ["privacy", "muster", "lernen"]
-        }
-      },
-      {
-        id: "50_agent_factory",
-        tag: "50",
-        en: {
-          title: "Agent Factory — our controlled agent ecosystem",
-          body: `
-            <p>Agent Factory is where we create, store, version, and audit specialized agents.</p>
-            <details open>
-              <summary>Every agent must have</summary>
-              <ul>
-                <li>Clear purpose</li>
-                <li>Known boundaries</li>
-                <li>Input/output format</li>
-                <li>Versioning + rollback</li>
-                <li>Known failure modes</li>
-              </ul>
-            </details>
-            <details>
-              <summary>Why it matters</summary>
-              <p>Without structure, agents turn into chaos. With structure, they become reliable tools.</p>
-            </details>
-          `,
-          meta: ["agents", "versioning", "control"]
-        },
-        de: {
-          title: "Agent Factory — kontrolliertes Agenten-Ökosystem",
-          body: `
-            <p>Agent Factory ist unser System zum Erstellen, Speichern, Versionieren und Auditieren spezialisierter Agenten.</p>
-            <details open>
-              <summary>Jeder Agent braucht</summary>
-              <ul>
-                <li>Klaren Zweck</li>
-                <li>Bekannte Grenzen</li>
-                <li>Input/Output-Format</li>
-                <li>Versionierung + Rollback</li>
-                <li>Bekannte Failure Modes</li>
-              </ul>
-            </details>
-            <details>
-              <summary>Warum das wichtig ist</summary>
-              <p>Ohne Struktur wird es Chaos. Mit Struktur werden Agenten zuverlässige Tools.</p>
-            </details>
-          `,
-          meta: ["agenten", "versionierung", "kontrolle"]
-        }
-      },
-      {
-        id: "60_controls",
-        tag: "60",
-        en: {
-          title: "Controls (we track first, restrict later)",
-          body: `
-            <p>We’re not adding hard restrictions yet. But we do want to <b>observe patterns</b> in backups.</p>
-            <div class="twocol">
-              <div>
-                <details open>
-                  <summary>What we do now</summary>
-                  <ul>
-                    <li>Log and review</li>
-                    <li>Flag risky patterns</li>
-                    <li>Keep training data clean</li>
-                  </ul>
-                </details>
-              </div>
-              <div>
-                <details open>
-                  <summary>What we do later (if needed)</summary>
-                  <ul>
-                    <li>Policy layers</li>
-                    <li>Safer routing</li>
-                    <li>Explicit “no-go” categories</li>
-                  </ul>
-                </details>
-              </div>
-            </div>
-            <p class="meta">
-              <span class="chip">principle: understand → then control</span>
-              <span class="chip">no live censorship</span>
-              <span class="chip">post-hoc auditing</span>
-            </p>
-          `,
-          meta: ["audit", "post-hoc", "policy-observer"]
-        },
-        de: {
-          title: "Kontrolle (erst beobachten, später begrenzen)",
-          body: `
-            <p>Wir setzen noch keine harten Restriktionen. Aber wir wollen <b>Muster</b> in Backups beobachten.</p>
-            <div class="twocol">
-              <div>
-                <details open>
-                  <summary>Was wir jetzt tun</summary>
-                  <ul>
-                    <li>Loggen und prüfen</li>
-                    <li>Risikomuster markieren</li>
-                    <li>Trainingsdaten sauber halten</li>
-                  </ul>
-                </details>
-              </div>
-              <div>
-                <details open>
-                  <summary>Was später möglich ist (wenn nötig)</summary>
-                  <ul>
-                    <li>Policy-Layer</li>
-                    <li>Sicheres Routing</li>
-                    <li>Explizite No-Go-Kategorien</li>
-                  </ul>
-                </details>
-              </div>
-            </div>
-            <p class="meta">
-              <span class="chip">Prinzip: verstehen → dann kontrollieren</span>
-              <span class="chip">keine Live-Zensur</span>
-              <span class="chip">Post-hoc Auditing</span>
-            </p>
-          `,
-          meta: ["audit", "post-hoc", "policy-observer"]
-        }
-      },
-      {
-        id: "70_emotional_gaming",
-        tag: "70",
-        en: {
-          title: "Emotional Gaming — the human pillar",
-          body: `
-            <p>Emotional Gaming is the community side: a safe place where emotions and performance can co-exist.</p>
-            <details open>
-              <summary>Core idea</summary>
-              <p>Many high-performing people are emotionally misunderstood. We want a place where being different becomes a strength, not shame.</p>
-            </details>
-            <details>
-              <summary>What we focus on</summary>
-              <ul>
-                <li>Conflict navigation without escalation</li>
-                <li>Trust, clarity, boundaries</li>
-                <li>Structure that supports the nervous system</li>
-              </ul>
-            </details>
-          `,
-          meta: ["community", "safety", "emotions"]
-        },
-        de: {
-          title: "Emotional Gaming — der menschliche Pfeiler",
-          body: `
-            <p>Emotional Gaming ist die Community-Seite: ein sicherer Ort, wo Emotionen und Performance zusammengehen dürfen.</p>
-            <details open>
-              <summary>Kernidee</summary>
-              <p>Viele leistungsstarke Menschen werden emotional missverstanden. Wir wollen einen Raum, wo Anderssein Stärke ist, nicht Scham.</p>
-            </details>
-            <details>
-              <summary>Worauf wir achten</summary>
-              <ul>
-                <li>Konflikte navigieren ohne Eskalation</li>
-                <li>Vertrauen, Klarheit, Grenzen</li>
-                <li>Struktur, die das Nervensystem entlastet</li>
-              </ul>
-            </details>
-          `,
-          meta: ["community", "sicherheit", "emotionen"]
-        }
-      },
-      {
-        id: "80_yggdrasil",
-        tag: "80",
-        en: {
-          title: "Yggdrasil (temporary) — living interface concept",
-          body: `
-            <p>Yggdrasil is our interface metaphor: roots → trunk → branches → leaves.</p>
-            <ul>
-              <li><b>Roots</b>: reasoning foundations</li>
-              <li><b>Trunk</b>: shared structure + identity</li>
-              <li><b>Branches</b>: domains, agents, communities</li>
-              <li><b>Leaves</b>: individual projects + outputs</li>
-            </ul>
-            <details>
-              <summary>Why a metaphor?</summary>
-              <p>Because we’re building a system that needs to feel alive and navigable, not like another cold dashboard.</p>
-            </details>
-          `,
-          meta: ["interface", "metaphor", "world-tree"]
-        },
-        de: {
-          title: "Yggdrasil (Arbeitstitel) — lebendiges Interface-Konzept",
-          body: `
-            <p>Yggdrasil ist unsere Interface-Metapher: Wurzeln → Stamm → Äste → Blätter.</p>
-            <ul>
-              <li><b>Wurzeln</b>: Reasoning-Fundament</li>
-              <li><b>Stamm</b>: gemeinsame Struktur + Identität</li>
-              <li><b>Äste</b>: Domänen, Agenten, Communities</li>
-              <li><b>Blätter</b>: Projekte + Outputs</li>
-            </ul>
-            <details>
-              <summary>Warum eine Metapher?</summary>
-              <p>Weil es lebendig und navigierbar sein soll — nicht nur ein kaltes Dashboard.</p>
-            </details>
-          `,
-          meta: ["interface", "metapher", "weltenbaum"]
-        }
-      },
-      {
-        id: "90_webstore",
-        tag: "90",
-        en: {
-          title: "Web Store — sustainability without faking it",
-          body: `
-            <p>At some point this must sustain itself. Not with hype — with real usefulness.</p>
-            <details open>
-              <summary>Possible store categories</summary>
-              <ul>
-                <li>Tools (workflow, automation, agent packs)</li>
-                <li>Templates (portals, dashboards, scripts)</li>
-                <li>Services (setup, consulting, custom builds)</li>
-                <li>Community support tiers</li>
-              </ul>
-            </details>
-            <details>
-              <summary>Non-negotiables</summary>
-              <ul>
-                <li>No exploitation</li>
-                <li>No fake scarcity</li>
-                <li>No “selling dreams”</li>
-              </ul>
-            </details>
-          `,
-          meta: ["store", "sustainability", "ethics"]
-        },
-        de: {
-          title: "Webstore — Nachhaltigkeit ohne Fake",
-          body: `
-            <p>Irgendwann muss sich das Projekt tragen. Nicht durch Hype — sondern durch echten Nutzen.</p>
-            <details open>
-              <summary>Mögliche Kategorien</summary>
-              <ul>
-                <li>Tools (Workflow, Automation, Agent-Packs)</li>
-                <li>Templates (Portale, Dashboards, Skripte)</li>
-                <li>Services (Setup, Consulting, Custom Builds)</li>
-                <li>Community-Support-Tiers</li>
-              </ul>
-            </details>
-            <details>
-              <summary>Non-negotiables</summary>
-              <ul>
-                <li>Keine Ausbeutung</li>
-                <li>Keine Fake-Knappheit</li>
-                <li>Kein „Träume verkaufen“</li>
-              </ul>
-            </details>
-          `,
-          meta: ["store", "nachhaltigkeit", "ethik"]
-        }
-      },
-      {
-        id: "95_streaming",
-        tag: "95",
-        en: {
-          title: "Streaming — why we do it (for real)",
-          body: `
-            <p>Streaming is not marketing for us. It’s a training environment.</p>
-            <details open>
-              <summary>Reasons (honest)</summary>
-              <ul>
-                <li>It forces structure in me</li>
-                <li>It exposes weak thinking live</li>
-                <li>It builds real workflows (no hiding)</li>
-                <li>It trains “streaming as a domain” in the hivemind</li>
-              </ul>
-            </details>
-            <details>
-              <summary>What you’ll see</summary>
-              <p>Messy building, testing, iterating — and gradually turning chaos into repeatable systems.</p>
-            </details>
-          `,
-          meta: ["streaming", "structure", "feedback"]
-        },
-        de: {
-          title: "Streaming — warum wir es wirklich tun",
-          body: `
-            <p>Streaming ist für uns kein Marketing. Es ist eine Trainingsumgebung.</p>
-            <details open>
-              <summary>Gründe (ehrlich)</summary>
-              <ul>
-                <li>Es zwingt mich zu Struktur</li>
-                <li>Es zeigt schwaches Denken live</li>
-                <li>Es baut echte Workflows (kein Verstecken)</li>
-                <li>Es trainiert „Streaming als Domäne“ im Hivemind</li>
-              </ul>
-            </details>
-            <details>
-              <summary>Was du sehen wirst</summary>
-              <p>Unordentliches Bauen, Testen, Iterieren — und langsam wird Chaos zu System.</p>
-            </details>
-          `,
-          meta: ["streaming", "struktur", "feedback"]
-        }
-      },
-      {
-        id: "99_how_to_help",
-        tag: "99",
-        en: {
-          title: "How you can help (practical, friend-level)",
-          body: `
-            <div class="twocol">
-              <div>
-                <details open>
-                  <summary>Best contributions</summary>
-                  <ul>
-                    <li>Be a reality-check</li>
-                    <li>Help define specs</li>
-                    <li>Test flows (break things)</li>
-                    <li>Write/translate docs</li>
-                    <li>Give honest feedback (no sugarcoat)</li>
-                  </ul>
-                </details>
-              </div>
-              <div>
-                <details open>
-                  <summary>What we need from friends</summary>
-                  <ul>
-                    <li>Patience with iteration</li>
-                    <li>Trust + clarity</li>
-                    <li>Boundaries (say no when needed)</li>
-                    <li>Consistency over bursts</li>
-                  </ul>
-                </details>
-              </div>
-            </div>
-            <p class="meta">
-              <span class="chip">No pressure</span>
-              <span class="chip">No guilt</span>
-              <span class="chip">Just clarity</span>
-            </p>
-          `,
-          meta: ["volunteers", "workflow", "friends"]
-        },
-        de: {
-          title: "Wie du helfen kannst (praktisch, auf Freundesebene)",
-          body: `
-            <div class="twocol">
-              <div>
-                <details open>
-                  <summary>Beste Beiträge</summary>
-                  <ul>
-                    <li>Reality-Check sein</li>
-                    <li>Spezifikationen definieren helfen</li>
-                    <li>Flows testen (kaputt machen)</li>
-                    <li>Doku schreiben/übersetzen</li>
-                    <li>Ehrliches Feedback (ohne Zucker)</li>
-                  </ul>
-                </details>
-              </div>
-              <div>
-                <details open>
-                  <summary>Was wir von Freunden brauchen</summary>
-                  <ul>
-                    <li>Geduld beim Iterieren</li>
-                    <li>Vertrauen + Klarheit</li>
-                    <li>Grenzen (Nein sagen, wenn nötig)</li>
-                    <li>Konstanz statt kurzer Hype</li>
-                  </ul>
-                </details>
-              </div>
-            </div>
-            <p class="meta">
-              <span class="chip">Kein Druck</span>
-              <span class="chip">Keine Schuld</span>
-              <span class="chip">Nur Klarheit</span>
-            </p>
-          `,
-          meta: ["freiwillige", "workflow", "freunde"]
-        }
-      }
-    ];
-
-    // ---------- State ----------
-    let lang = "en";
-    let activeIndex = 0;
-
-    // ---------- Render ----------
-    const navEl = document.getElementById("nav");
-    const contentEl = document.getElementById("content");
-    const searchBox = document.getElementById("searchBox");
-
-    function sectionTitle(s){ return s[lang].title; }
-    function sectionBody(s){ return s[lang].body; }
-
-    function renderNav(){
-      navEl.innerHTML = "";
-      SECTIONS.forEach((s, idx) => {
-        const a = document.createElement("a");
-        a.href = "#" + s.id;
-        a.dataset.idx = idx;
-        a.innerHTML = `<span>${s.tag} · ${escapeHtml(sectionTitle(s))}</span><span class="tag">${s.id}</span>`;
-        a.addEventListener("click", (e) => {
-          e.preventDefault();
-          goTo(idx);
-        });
-        navEl.appendChild(a);
-      });
-      updateActiveNav();
-    }
-
-    function renderContent(){
-      contentEl.innerHTML = "";
-      SECTIONS.forEach((s, idx) => {
-        const card = document.createElement("section");
-        card.className = "card";
-        card.id = s.id;
-        card.dataset.idx = idx;
-
-        card.innerHTML = `
-          <h3>${s.tag} · ${escapeHtml(sectionTitle(s))}</h3>
-          <div class="content">${sectionBody(s)}</div>
-          <div class="meta">
-            ${s[lang].meta.map(m => `<span class="chip">${escapeHtml(m)}</span>`).join("")}
+        <div class="quickGrid">
+          <div class="quickCard">
+            <div class="quickCard__k" data-i18n="quick_1_k">If you remember one thing:</div>
+            <div class="quickCard__v" data-i18n="quick_1_v">AI is a system that predicts “the next best token” — but can be engineered into a reliable workflow.</div>
           </div>
-        `;
-        contentEl.appendChild(card);
-      });
+          <div class="quickCard">
+            <div class="quickCard__k" data-i18n="quick_2_k">Correct use:</div>
+            <div class="quickCard__v" data-i18n="quick_2_v">Design a pipeline: goals → constraints → steps → checks → output.</div>
+          </div>
+          <div class="quickCard">
+            <div class="quickCard__k" data-i18n="quick_3_k">Your advantage:</div>
+            <div class="quickCard__v" data-i18n="quick_3_v">You don’t “ask questions”. You operate an engine with a specification.</div>
+          </div>
+        </div>
+      </div>
 
-      // open first section by default
-      scrollToActive(true);
-    }
+      <div class="hero__right">
+        <div class="glassPanel">
+          <div class="glassPanel__title" data-i18n="panel_title">Mental model (visual)</div>
 
-    function updateHeaders(){
-      const t = document.getElementById("pageTitle");
-      const lede = document.getElementById("pageLede");
-      const b1 = document.getElementById("badge1");
-      const b2 = document.getElementById("badge2");
-      const b3 = document.getElementById("badge3");
-      const fL = document.getElementById("footerLeft");
-      const fR = document.getElementById("footerRight");
-      const timerTitle = document.getElementById("timerTitle");
-      const timerHint = document.getElementById("timerHint");
+          <!-- SVG diagram: AI as an engine -->
+          <svg class="diagram" viewBox="0 0 640 360" role="img" aria-label="Diagram: Inputs to model to output with checks">
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
 
-      if(lang === "en"){
-        t.textContent = "Maneit — the honest overview";
-        lede.textContent = "This is a transparent, friend-level presentation: what we’re building, why it exists, and what it actually takes to help.";
-        b1.textContent = "Reasoning-first";
-        b2.textContent = "Iterating live";
-        b3.textContent = "Chaos included";
-        fL.textContent = "Tip: Use search to filter the deck instantly.";
-        fR.textContent = "Navigation highlights current section.";
-        timerTitle.textContent = "Break Timer";
-        timerHint.textContent = "Use this to time breaks or section pacing.";
-      } else {
-        t.textContent = "Maneit — der ehrliche Überblick";
-        lede.textContent = "Eine transparente Präsentation für Freunde: was wir bauen, warum es existiert, und was es wirklich braucht, um zu helfen.";
-        b1.textContent = "Reasoning-first";
-        b2.textContent = "Live Iteration";
-        b3.textContent = "Chaos inklusive";
-        fL.textContent = "Tipp: Suche filtert das Deck sofort.";
-        fR.textContent = "Navigation markiert die aktuelle Sektion.";
-        timerTitle.textContent = "Pausen-Timer";
-        timerHint.textContent = "Nutze das für Pausen oder Tempo pro Sektion.";
-      }
-    }
+            <rect x="18" y="24" width="190" height="90" rx="18" class="dBox"/>
+            <text x="42" y="56" class="dText" data-i18n-svg="svg_inputs">Inputs</text>
+            <text x="42" y="78" class="dSub" data-i18n-svg="svg_goal">Goal</text>
+            <text x="42" y="98" class="dSub" data-i18n-svg="svg_context">Context</text>
 
-    function updateActiveNav(){
-      const links = [...navEl.querySelectorAll("a")];
-      links.forEach(l => l.classList.remove("active"));
-      const active = links.find(l => Number(l.dataset.idx) === activeIndex);
-      if(active) active.classList.add("active");
-    }
+            <rect x="18" y="140" width="190" height="90" rx="18" class="dBox"/>
+            <text x="42" y="172" class="dText" data-i18n-svg="svg_constraints">Constraints</text>
+            <text x="42" y="194" class="dSub" data-i18n-svg="svg_rules">Rules</text>
+            <text x="42" y="214" class="dSub" data-i18n-svg="svg_format">Format</text>
 
-    function goTo(idx){
-      activeIndex = clamp(idx, 0, SECTIONS.length - 1);
-      updateActiveNav();
-      scrollToActive(false);
-    }
+            <rect x="240" y="80" width="200" height="140" rx="22" class="dCore" filter="url(#glow)"/>
+            <text x="280" y="132" class="dText" data-i18n-svg="svg_model">Model</text>
+            <text x="280" y="154" class="dSub" data-i18n-svg="svg_reasoning">Reasoning</text>
+            <text x="280" y="176" class="dSub" data-i18n-svg="svg_language">Language</text>
+            <text x="280" y="198" class="dSub" data-i18n-svg="svg_planning">Planning</text>
 
-    function scrollToActive(instant){
-      const el = contentEl.querySelector(`section[data-idx="${activeIndex}"]`);
-      if(!el) return;
-      el.scrollIntoView({behavior: instant ? "auto" : "smooth", block:"start"});
-      setTimeout(updateProgress, 200);
-    }
+            <rect x="462" y="24" width="160" height="90" rx="18" class="dBox"/>
+            <text x="488" y="56" class="dText" data-i18n-svg="svg_output">Output</text>
+            <text x="488" y="78" class="dSub" data-i18n-svg="svg_draft">Draft</text>
+            <text x="488" y="98" class="dSub" data-i18n-svg="svg_structure">Structure</text>
 
-    // ---------- Search filtering ----------
-    function normalize(str){ return (str || "").toLowerCase(); }
+            <rect x="462" y="140" width="160" height="90" rx="18" class="dBox"/>
+            <text x="488" y="172" class="dText" data-i18n-svg="svg_checks">Checks</text>
+            <text x="488" y="194" class="dSub" data-i18n-svg="svg_verify">Verify</text>
+            <text x="488" y="214" class="dSub" data-i18n-svg="svg_iterate">Iterate</text>
 
-    function clearHighlights(){
-      // remove <mark> by reconstructing innerHTML for cards (rerender is simplest & safe here)
-      renderContent();
-      applyFilter(searchBox.value.trim());
-      goTo(activeIndex);
-    }
+            <path d="M210 68 C240 68 230 120 240 120" class="dArrow"/>
+            <path d="M210 184 C240 184 230 150 240 150" class="dArrow"/>
+            <path d="M440 120 C470 120 460 68 462 68" class="dArrow"/>
+            <path d="M440 170 C470 170 460 184 462 184" class="dArrow"/>
 
-    function highlightText(node, query){
-      if(!query) return;
-      const q = query.toLowerCase();
-      const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null);
-      const texts = [];
-      while(walker.nextNode()){
-        const t = walker.currentNode;
-        if(t.nodeValue && t.nodeValue.toLowerCase().includes(q)) texts.push(t);
-      }
-      texts.forEach(textNode => {
-        const val = textNode.nodeValue;
-        const idx = val.toLowerCase().indexOf(q);
-        if(idx < 0) return;
-        const before = val.slice(0, idx);
-        const match = val.slice(idx, idx + query.length);
-        const after  = val.slice(idx + query.length);
-        const span = document.createElement("span");
-        span.innerHTML = `${escapeHtml(before)}<mark>${escapeHtml(match)}</mark>${escapeHtml(after)}`;
-        textNode.parentNode.replaceChild(span, textNode);
-      });
-    }
+            <text x="22" y="320" class="dFoot" data-i18n-svg="svg_footer">
+              The trick is not “ask AI”. The trick is: build a repeatable system around it.
+            </text>
+          </svg>
 
-    function applyFilter(q){
-      const query = normalize(q);
-      const cards = [...contentEl.querySelectorAll("section.card")];
+          <div class="miniNote" data-i18n="panel_note">
+            This website teaches AI the way engineers use it: as a controllable machine with inputs, constraints, and verification loops.
+          </div>
+        </div>
+      </div>
+    </section>
 
-      if(!query){
-        cards.forEach(c => c.style.display = "");
-        return;
-      }
+    <!-- START HERE -->
+    <section id="startHere" class="section">
+      <div class="section__head">
+        <h2 data-i18n="start_title">Start here: the exact definition (no fluff)</h2>
+        <p class="section__sub" data-i18n="start_sub">
+          We’ll build a correct mental model first, then we’ll show how to use it like a premium tool.
+        </p>
+      </div>
 
-      cards.forEach(c => {
-        const txt = normalize(c.innerText);
-        const hit = txt.includes(query);
-        c.style.display = hit ? "" : "none";
-        if(hit){
-          // highlight within card
-          highlightText(c, q);
-        }
-      });
+      <div class="grid2">
+        <article class="card">
+          <h3 data-i18n="def_title">Definition</h3>
+          <p data-i18n="def_p1">
+            Modern AI (the kind people mean today) is usually a <b>trained statistical model</b> that predicts
+            what comes next in a sequence (text, images, audio, code).
+          </p>
+          <p class="muted" data-i18n="def_p2">
+            In a chat model, the sequence is text. The model predicts the next token (a piece of a word),
+            repeatedly, until it produces a full answer.
+          </p>
 
-      // set activeIndex to first visible
-      const visible = cards.filter(c => c.style.display !== "none");
-      if(visible.length){
-        activeIndex = Number(visible[0].dataset.idx);
-        updateActiveNav();
-      }
-    }
+          <details class="details">
+            <summary data-i18n="def_expand">Expand: what “predict next token” really means</summary>
+            <div class="details__content">
+              <p data-i18n="tok_p1">
+                A chat model doesn’t “think” like a human. It calculates probabilities:
+                given your text, what token is most likely to follow in the training distribution?
+              </p>
+              <p data-i18n="tok_p2">
+                The surprise: this prediction becomes <b>useful reasoning</b> when the model is large,
+                trained on enough patterns, and guided by instructions + structure.
+              </p>
+              <div class="callout">
+                <div class="callout__title" data-i18n="tok_callout_t">Important</div>
+                <div class="callout__body" data-i18n="tok_callout_b">
+                  The model is not “magic”. The power comes from: (1) huge learned pattern library,
+                  (2) careful prompting/specifications, and (3) verification loops.
+                </div>
+              </div>
+            </div>
+          </details>
+        </article>
 
-    // ---------- Expand/Collapse details ----------
-    function setAllDetails(open){
-      const details = [...document.querySelectorAll("details")];
-      details.forEach(d => d.open = open);
-    }
+        <article class="card">
+          <h3 data-i18n="you_title">What I (ChatGPT) am, precisely</h3>
+          <ul class="list">
+            <li data-i18n="you_li1"><b>A language engine</b> trained to produce coherent, useful text.</li>
+            <li data-i18n="you_li2"><b>A reasoning assistant</b> when you give it tasks, constraints, and structure.</li>
+            <li data-i18n="you_li3"><b>A compiler for intent</b>: messy human goals → explicit plans + outputs.</li>
+            <li data-i18n="you_li4"><b>Not a database</b>: I can be wrong unless we verify.</li>
+          </ul>
 
-    // ---------- Keyboard navigation ----------
-    document.addEventListener("keydown", (e) => {
-      if(e.key === "/" && document.activeElement !== searchBox){
-        e.preventDefault();
-        searchBox.focus();
-        return;
-      }
-      if(e.key === "ArrowRight"){
-        e.preventDefault();
-        nextVisible(1);
-        return;
-      }
-      if(e.key === "ArrowLeft"){
-        e.preventDefault();
-        nextVisible(-1);
-        return;
-      }
-      if(e.key === "Escape" && document.activeElement === searchBox){
-        searchBox.blur();
-      }
-    });
+          <details class="details">
+            <summary data-i18n="you_expand">Expand: why it sometimes sounds confident but can be wrong</summary>
+            <div class="details__content">
+              <p data-i18n="hall_p1">
+                The model is optimized to produce plausible, fluent output. Fluency can look like certainty.
+                If you don’t force checks, it may “fill in” gaps.
+              </p>
+              <p data-i18n="hall_p2">
+                Correct usage means: add constraints, require sources/tests, and iterate.
+              </p>
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
 
-    function nextVisible(dir){
-      const cards = [...contentEl.querySelectorAll("section.card")].filter(c => c.style.display !== "none");
-      if(!cards.length) return;
-      const curId = SECTIONS[activeIndex].id;
-      const curPos = cards.findIndex(c => c.id === curId);
-      const nextPos = clamp(curPos + dir, 0, cards.length - 1);
-      activeIndex = Number(cards[nextPos].dataset.idx);
-      updateActiveNav();
-      cards[nextPos].scrollIntoView({behavior:"smooth", block:"start"});
-      setTimeout(updateProgress, 200);
-    }
+    <!-- WHAT IT IS NOT -->
+    <section id="whatItIsNot" class="section">
+      <div class="section__head">
+        <h2 data-i18n="not_title">What AI is NOT (and why people get misled)</h2>
+        <p class="section__sub" data-i18n="not_sub">
+          Most “AI content” online is marketing. This section is the antidote.
+        </p>
+      </div>
 
-    // ---------- Timer ----------
-    const minutesInput = document.getElementById("minutesInput");
-    const secondsInput = document.getElementById("secondsInput");
-    const clockEl = document.getElementById("clock");
-    const barFill = document.getElementById("barFill");
-    const timerMode = document.getElementById("timerMode");
+      <div class="grid3">
+        <article class="card">
+          <h3 data-i18n="not_1_t">Not: a magic brain</h3>
+          <p data-i18n="not_1_p">
+            It doesn’t “know” things the way humans know. It generates outputs based on learned patterns.
+          </p>
+        </article>
 
-    let tTotal = 10 * 60;
-    let tLeft = tTotal;
-    let tRunning = false;
-    let tInterval = null;
+        <article class="card">
+          <h3 data-i18n="not_2_t">Not: guaranteed truth</h3>
+          <p data-i18n="not_2_p">
+            Without verification, output can contain errors. Reliability comes from process, not vibes.
+          </p>
+        </article>
 
-    function setClockFromInputs(){
-      const m = clamp(parseInt(minutesInput.value || "10", 10), 1, 180);
-      const s = clamp(parseInt(secondsInput.value || "0", 10), 0, 59);
-      tTotal = (m * 60) + s;
-      tLeft = tTotal;
-      renderClock();
-    }
+        <article class="card">
+          <h3 data-i18n="not_3_t">Not: “press button, get rich”</h3>
+          <p data-i18n="not_3_p">
+            Real value comes from: clear problem definitions, domain knowledge, and systems thinking.
+          </p>
+        </article>
+      </div>
 
-    function fmt(sec){
-      const m = Math.floor(sec/60);
-      const s = sec%60;
-      return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
-    }
+      <div class="callout callout--warn">
+        <div class="callout__title" data-i18n="warn_t">Why the “lazy money AI” narrative is harmful</div>
+        <div class="callout__body" data-i18n="warn_b">
+          It trains people to expect outputs without building a pipeline. Then they blame the tool when it fails.
+          Professionals treat AI like a high-performance engine that needs a chassis, brakes, and a driver.
+        </div>
+      </div>
+    </section>
 
-    function renderClock(){
-      clockEl.textContent = fmt(tLeft);
-      const pct = tTotal ? ((tTotal - tLeft) / tTotal) * 100 : 0;
-      barFill.style.width = `${pct}%`;
-      timerMode.textContent = tRunning ? "running" : (tLeft === tTotal ? "idle" : "paused");
-      if(tLeft === 0){
-        timerMode.textContent = "done";
-        barFill.style.width = "100%";
-      }
-    }
+    <!-- USING AI CORRECTLY -->
+    <section class="section">
+      <div class="section__head">
+        <h2 data-i18n="use_title">Using AI correctly: the professional method</h2>
+        <p class="section__sub" data-i18n="use_sub">
+          This is the part people don’t teach: how to turn a chat model into a controllable production system.
+        </p>
+      </div>
 
-    function startTimer(){
-      if(tLeft <= 0) setClockFromInputs();
-      if(tRunning) return;
-      tRunning = true;
-      renderClock();
-      tInterval = setInterval(() => {
-        if(!tRunning) return;
-        tLeft = Math.max(0, tLeft - 1);
-        renderClock();
-        if(tLeft === 0){
-          tRunning = false;
-          clearInterval(tInterval);
-          tInterval = null;
-          // gentle beep
-          try{
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const o = ctx.createOscillator();
-            const g = ctx.createGain();
-            o.type = "sine";
-            o.frequency.value = 660;
-            g.gain.value = 0.05;
-            o.connect(g); g.connect(ctx.destination);
-            o.start();
-            setTimeout(() => { o.stop(); ctx.close(); }, 220);
-          } catch(e){}
-        }
-      }, 1000);
-    }
+      <div class="stepper" id="stepper">
+        <div class="stepper__top">
+          <div class="stepper__title" data-i18n="stepper_title">Step-by-step workflow</div>
+          <div class="stepper__meter" aria-hidden="true">
+            <div class="stepper__bar" id="stepBar"></div>
+          </div>
+          <div class="stepper__meta">
+            <span id="stepCount">1 / 6</span>
+          </div>
+        </div>
 
-    function pauseTimer(){
-      tRunning = false;
-      renderClock();
-    }
+        <div class="stepper__body" id="stepBody"></div>
 
-    function resetTimer(){
-      tRunning = false;
-      if(tInterval){ clearInterval(tInterval); tInterval = null; }
-      setClockFromInputs();
-      renderClock();
-    }
+        <div class="stepper__actions">
+          <button class="btn btn--ghost" id="prevStep" type="button" data-i18n="btn_prev">Previous</button>
+          <button class="btn btn--primary" id="nextStep" type="button" data-i18n="btn_next">Next</button>
+        </div>
+      </div>
 
-    minutesInput.addEventListener("change", resetTimer);
-    secondsInput.addEventListener("change", resetTimer);
+      <div class="grid2 mt">
+        <article class="card">
+          <h3 data-i18n="spec_title">The “specification” mindset</h3>
+          <p data-i18n="spec_p1">
+            You don’t chat. You write a spec: goal, constraints, definition of done, format, and checks.
+          </p>
+          <details class="details">
+            <summary data-i18n="spec_expand">Spec template (copy)</summary>
+            <div class="details__content">
+<pre class="codeblock"><code>GOAL:
+- What outcome do we want?
 
-    document.getElementById("startTimer").addEventListener("click", startTimer);
-    document.getElementById("pauseTimer").addEventListener("click", pauseTimer);
-    document.getElementById("resetTimer").addEventListener("click", resetTimer);
+CONTEXT:
+- What does the model need to know to do it correctly?
 
-    // ---------- Buttons ----------
-    document.getElementById("langEN").addEventListener("click", () => {
-      lang = "en";
-      updateHeaders();
-      renderNav();
-      renderContent();
-      applyFilter(searchBox.value.trim());
-      updateActiveNav();
-    });
-    document.getElementById("langDE").addEventListener("click", () => {
-      lang = "de";
-      updateHeaders();
-      renderNav();
-      renderContent();
-      applyFilter(searchBox.value.trim());
-      updateActiveNav();
-    });
+CONSTRAINTS:
+- What must never happen?
+- What format is required?
 
-    document.getElementById("expandAll").addEventListener("click", () => setAllDetails(true));
-    document.getElementById("collapseAll").addEventListener("click", () => setAllDetails(false));
-    document.getElementById("nextBtn").addEventListener("click", () => nextVisible(1));
+DEFINITION OF DONE:
+- What does “correct” look like?
 
-    searchBox.addEventListener("input", () => {
-      // rerender to clear previous highlights then apply
-      clearHighlights();
-    });
+CHECKS:
+- How do we verify output?
+- What tests or sources are required?</code></pre>
+            </div>
+          </details>
+        </article>
 
-    // ---------- Scroll tracking & progress ----------
-    window.addEventListener("scroll", () => {
-      updateProgress();
-      detectActiveFromScroll();
-    }, {passive:true});
+        <article class="card">
+          <h3 data-i18n="pipeline_title">Pipelines beat prompts</h3>
+          <p data-i18n="pipeline_p1">
+            A single clever prompt is fragile. A pipeline is robust:
+            break work into stages, enforce structure, and iterate.
+          </p>
 
-    function detectActiveFromScroll(){
-      const cards = [...contentEl.querySelectorAll("section.card")].filter(c => c.style.display !== "none");
-      if(!cards.length) return;
-      const top = 120; // offset
-      let best = cards[0];
-      for(const c of cards){
-        const r = c.getBoundingClientRect();
-        if(r.top - top <= 10) best = c;
-        else break;
-      }
-      const idx = Number(best.dataset.idx);
-      if(idx !== activeIndex){
-        activeIndex = idx;
-        updateActiveNav();
-      }
-    }
+          <div class="miniGrid">
+            <div class="miniTile"><b data-i18n="pipe_1_t">Stage 1</b><span data-i18n="pipe_1_p">Clarify requirements</span></div>
+            <div class="miniTile"><b data-i18n="pipe_2_t">Stage 2</b><span data-i18n="pipe_2_p">Generate options</span></div>
+            <div class="miniTile"><b data-i18n="pipe_3_t">Stage 3</b><span data-i18n="pipe_3_p">Select + justify</span></div>
+            <div class="miniTile"><b data-i18n="pipe_4_t">Stage 4</b><span data-i18n="pipe_4_p">Produce deliverable</span></div>
+            <div class="miniTile"><b data-i18n="pipe_5_t">Stage 5</b><span data-i18n="pipe_5_p">Verify + refine</span></div>
+            <div class="miniTile"><b data-i18n="pipe_6_t">Stage 6</b><span data-i18n="pipe_6_p">Package + document</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
 
-    function updateProgress(){
-      const doc = document.documentElement;
-      const scrollTop = doc.scrollTop || document.body.scrollTop;
-      const scrollHeight = doc.scrollHeight - doc.clientHeight;
-      const pct = scrollHeight ? (scrollTop / scrollHeight) * 100 : 0;
-      document.getElementById("progressBar").style.width = `${pct}%`;
-    }
+    <!-- GLOSSARY -->
+    <section class="section">
+      <div class="section__head">
+        <h2 data-i18n="gloss_title">Glossary (precise definitions)</h2>
+        <p class="section__sub" data-i18n="gloss_sub">
+          No vague words. Everything defined cleanly.
+        </p>
+      </div>
 
-    // ---------- Particles ----------
-    (function initParticles(){
-      const g = document.getElementById("particles");
-      if(!g) return;
-      const n = 55;
-      for(let i=0;i<n;i++){
-        const cx = Math.random()*1200;
-        const cy = Math.random()*800;
-        const r = 1 + Math.random()*2.2;
-        const c = document.createElementNS("http://www.w3.org/2000/svg","circle");
-        c.setAttribute("cx", cx);
-        c.setAttribute("cy", cy);
-        c.setAttribute("r", r);
-        c.setAttribute("fill", Math.random()>.5 ? "rgba(94,234,212,.35)" : "rgba(251,191,36,.28)");
-        c.dataset.v = (0.12 + Math.random()*0.25).toFixed(3);
-        g.appendChild(c);
-      }
-      let t=0;
-      function tick(){
-        t += 0.01;
-        [...g.children].forEach((c, i) => {
-          const v = parseFloat(c.dataset.v || "0.2");
-          const baseY = parseFloat(c.getAttribute("cy"));
-          const y = baseY + Math.sin(t + i)*v*12;
-          c.setAttribute("cy", y);
-          c.setAttribute("opacity", 0.35 + (Math.sin(t+i*0.7)+1)*0.18);
-        });
-        requestAnimationFrame(tick);
-      }
-      tick();
-    })();
+      <div class="accordion">
+        <details class="details">
+          <summary data-i18n="g1_t">Model</summary>
+          <div class="details__content" data-i18n="g1_p"></div>
+        </details>
+        <details class="details">
+          <summary data-i18n="g2_t">Training vs Inference</summary>
+          <div class="details__content" data-i18n="g2_p"></div>
+        </details>
+        <details class="details">
+          <summary data-i18n="g3_t">Prompt</summary>
+          <div class="details__content" data-i18n="g3_p"></div>
+        </details>
+        <details class="details">
+          <summary data-i18n="g4_t">Hallucination</summary>
+          <div class="details__content" data-i18n="g4_p"></div>
+        </details>
+        <details class="details">
+          <summary data-i18n="g5_t">Agent</summary>
+          <div class="details__content" data-i18n="g5_p"></div>
+        </details>
+      </div>
+    </section>
 
-    // ---------- Helpers ----------
-    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
-    function escapeHtml(str){
-      return String(str).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    }
+    <!-- NEXT -->
+    <section class="section">
+      <div class="section__head">
+        <h2 data-i18n="next_title">Where we go from here</h2>
+        <p class="section__sub" data-i18n="next_sub"></p>
+      </div>
 
-    // ---------- Init ----------
-    updateHeaders();
-    renderNav();
-    renderContent();
-    setClockFromInputs();
-    renderClock();
-    updateProgress();
-  </script>
+      <div class="grid2">
+        <article class="card">
+          <h3 data-i18n="next_hive_t"></h3>
+          <p data-i18n="next_hive_p"></p>
+          <a class="btn btn--primary" href="hivemind.html" data-i18n="next_hive_btn"></a>
+        </article>
+
+        <article class="card">
+          <h3 data-i18n="next_emo_t"></h3>
+          <p data-i18n="next_emo_p"></p>
+          <a class="btn btn--primary" href="emotional-gaming.html" data-i18n="next_emo_btn"></a>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__left">
+        <div class="footer__title">Maneit</div>
+        <div class="footer__sub" data-i18n="footer_sub"></div>
+      </div>
+      <div class="footer__right">
+        <div class="tiny" data-i18n="footer_note"></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/app.js"></script>
 </body>
 </html>
