@@ -1,1 +1,212 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Maneit — Hivemind Reasoning Model</title>
+  <meta name="description" content="How we extract, stabilize, and deploy a consistent reasoning style across agents." />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="brand">
+        <div class="brand__mark" aria-hidden="true">◎</div>
+        <div class="brand__text">
+          <div class="brand__name">Maneit</div>
+          <div class="brand__tag" data-i18n="hive_header_tag">Hivemind Reasoning Model</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Primary">
+        <a class="nav__link" href="index.html" data-i18n="nav_home">Home</a>
+        <a class="nav__link is-active" href="hivemind.html" data-i18n="nav_hivemind">Hivemind Reasoning Model</a>
+        <a class="nav__link" href="emotional-gaming.html" data-i18n="nav_emotional">Emotional Gaming</a>
+      </nav>
+
+      <div class="controls">
+        <label class="langSelect" for="langSelect" aria-label="Language">
+          <span class="langSelect__dot" aria-hidden="true"></span>
+          <select id="langSelect">
+            <option value="en">English</option>
+            <option value="no">Norsk</option>
+            <option value="de">Deutsch</option>
+            <option value="nl">Nederlands</option>
+            <option value="fr">Français</option>
+            <option value="uk">Українська</option>
+          </select>
+        </label>
+
+        <button class="chip" id="focusToggle" type="button">
+          <span class="chip__dot"></span><span data-i18n="ui_focus">Focus Mode</span>
+        </button>
+        <button class="chip" id="deepToggle" type="button">
+          <span class="chip__dot"></span><span data-i18n="ui_deep">Deep Dive</span>
+        </button>
+      </div>
+    </div>
+    <div class="readProgress" aria-hidden="true"><div class="readProgress__bar" id="readBar"></div></div>
+  </header>
+
+  <main id="main" class="container">
+    <section class="hero hero--compact">
+      <div class="hero__left">
+        <div class="pill" data-i18n="hive_pill"></div>
+        <h1 class="hero__title" data-i18n="hive_title"></h1>
+        <p class="hero__lead" data-i18n="hive_lead"></p>
+
+        <div class="hero__ctaRow">
+          <a class="btn btn--primary" href="#whatIsIt" data-i18n="hive_cta1"></a>
+          <a class="btn btn--ghost" href="#whyUnique" data-i18n="hive_cta2"></a>
+        </div>
+      </div>
+
+      <div class="hero__right">
+        <div class="glassPanel">
+          <div class="glassPanel__title" data-i18n="hive_panel_t"></div>
+
+          <svg class="diagram" viewBox="0 0 640 360" role="img" aria-label="Diagram: Supervisor coordinates agents with shared standards">
+            <rect x="230" y="30" width="180" height="70" rx="18" class="dCore"/>
+            <text x="270" y="74" class="dText" data-i18n-svg="svg_supervisor">Supervisor</text>
+
+            <rect x="40" y="140" width="160" height="70" rx="18" class="dBox"/>
+            <text x="78" y="182" class="dText" data-i18n-svg="svg_agent_a">Agent A</text>
+
+            <rect x="240" y="140" width="160" height="70" rx="18" class="dBox"/>
+            <text x="278" y="182" class="dText" data-i18n-svg="svg_agent_b">Agent B</text>
+
+            <rect x="440" y="140" width="160" height="70" rx="18" class="dBox"/>
+            <text x="478" y="182" class="dText" data-i18n-svg="svg_agent_c">Agent C</text>
+
+            <rect x="120" y="250" width="400" height="80" rx="18" class="dBox"/>
+            <text x="150" y="286" class="dText" data-i18n-svg="svg_shared_standard">Shared Reasoning Standard</text>
+            <text x="150" y="310" class="dSub" data-i18n-svg="svg_shared_sub">Rules • Format • Checks • Tone • Priorities</text>
+
+            <path d="M320 100 C260 120 200 120 120 140" class="dArrow"/>
+            <path d="M320 100 C320 120 320 120 320 140" class="dArrow"/>
+            <path d="M320 100 C380 120 440 120 520 140" class="dArrow"/>
+
+            <path d="M120 210 C160 240 190 250 220 250" class="dArrow"/>
+            <path d="M320 210 C320 240 320 250 320 250" class="dArrow"/>
+            <path d="M520 210 C480 240 450 250 420 250" class="dArrow"/>
+
+            <text x="40" y="340" class="dFoot" data-i18n-svg="svg_hive_footer">Consistency is not “talent”. It’s architecture.</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section id="whatIsIt" class="section">
+      <div class="section__head">
+        <h2 data-i18n="hive_what_t"></h2>
+        <p class="section__sub" data-i18n="hive_what_s"></p>
+      </div>
+
+      <div class="grid2">
+        <article class="card">
+          <h3 data-i18n="hive_is_t"></h3>
+          <p data-i18n="hive_is_p"></p>
+          <details class="details">
+            <summary data-i18n="hive_is_exp"></summary>
+            <div class="details__content">
+              <ul class="list">
+                <li data-i18n="hive_share_1"></li>
+                <li data-i18n="hive_share_2"></li>
+                <li data-i18n="hive_share_3"></li>
+                <li data-i18n="hive_share_4"></li>
+              </ul>
+            </div>
+          </details>
+        </article>
+
+        <article class="card">
+          <h3 data-i18n="hive_extract_t"></h3>
+          <p data-i18n="hive_extract_p"></p>
+          <details class="details">
+            <summary data-i18n="hive_extract_exp"></summary>
+            <div class="details__content">
+              <ol class="list list--num">
+                <li data-i18n="hive_pipe_1"></li>
+                <li data-i18n="hive_pipe_2"></li>
+                <li data-i18n="hive_pipe_3"></li>
+                <li data-i18n="hive_pipe_4"></li>
+                <li data-i18n="hive_pipe_5"></li>
+                <li data-i18n="hive_pipe_6"></li>
+              </ol>
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <section id="whyUnique" class="section">
+      <div class="section__head">
+        <h2 data-i18n="hive_unique_t"></h2>
+        <p class="section__sub" data-i18n="hive_unique_s"></p>
+      </div>
+
+      <div class="grid3">
+        <article class="card">
+          <h3 data-i18n="hive_u1_t"></h3>
+          <p data-i18n="hive_u1_p"></p>
+        </article>
+        <article class="card">
+          <h3 data-i18n="hive_u2_t"></h3>
+          <p data-i18n="hive_u2_p"></p>
+        </article>
+        <article class="card">
+          <h3 data-i18n="hive_u3_t"></h3>
+          <p data-i18n="hive_u3_p"></p>
+        </article>
+      </div>
+
+      <div class="callout">
+        <div class="callout__title" data-i18n="hive_call_t"></div>
+        <div class="callout__body" data-i18n="hive_call_b"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__head">
+        <h2 data-i18n="hive_next_t"></h2>
+        <p class="section__sub" data-i18n="hive_next_s"></p>
+      </div>
+
+      <div class="grid2">
+        <article class="card">
+          <h3 data-i18n="hive_pack_t"></h3>
+          <ul class="list">
+            <li data-i18n="hive_pack_1"></li>
+            <li data-i18n="hive_pack_2"></li>
+            <li data-i18n="hive_pack_3"></li>
+            <li data-i18n="hive_pack_4"></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3 data-i18n="hive_link_t"></h3>
+          <p data-i18n="hive_link_p"></p>
+          <a class="btn btn--primary" href="emotional-gaming.html" data-i18n="hive_link_btn"></a>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__left">
+        <div class="footer__title">Maneit</div>
+        <div class="footer__sub" data-i18n="footer_sub"></div>
+      </div>
+      <div class="footer__right">
+        <div class="tiny" data-i18n="footer_note"></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
 
